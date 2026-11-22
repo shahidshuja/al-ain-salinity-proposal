@@ -622,6 +622,19 @@ aside.drawer.on{transform:none}
   <div class="tblwrap"><table class="tbl" id="decTbl"></table></div>
   <div class="subhead"><h3>Items to confirm before submission</h3></div>
   <div class="tblwrap"><table class="tbl" id="confTbl"></table></div>
+
+  <div class="subhead"><h3>Beyond the map: from knowing salinity to acting on it</h3><span>Open question for discussion</span></div>
+  <div class="statement">
+    <p class="kicker">Possible extension</p>
+    <p>A salinity map alone does not change practice on a farm. The project already covers measuring and starts diagnosing through the early warning layer. A next step would turn the maps into field-level advice: leaching requirement, irrigation timing, crop choice, drainage flags and amendments, checked against later NISAR images.</p>
+    <p>This would fit as an optional fifth sub-objective, a decision-support or prescription layer that builds on SO3 and SO4, without changing the core of the proposal.</p>
+  </div>
+  <div class="statement" style="border-left-color:var(--accent)">
+    <p class="kicker">Scope note</p>
+    <p>Gypsum is the standard amendment for sodic soils, and the decision to apply it depends on SAR or ESP, not on EC alone. This runs into the earlier scope decision to keep the work to salinity and moisture, with sodicity left out. The proposal still measures SAR in the soil cores and farm-gate water, so the data would exist, but a gypsum recommendation would make sodicity an output again.</p>
+  </div>
+  <div class="subhead"><h3>Three things to settle</h3></div>
+  <div class="tblwrap"><table class="tbl" id="nextTbl"></table></div>
 </section>
 
 </main>
@@ -862,9 +875,13 @@ table('benTbl',['Group','Benefit'],[
 table('decTbl',['#','Decision','Options'],[
  ['1','Study design and sites','A: TWW attribution on Al Nahda and the 2024 rollout farms against groundwater controls. B: physics calibration on Al Foah farms. C: B as phase 1, then A'],
  ['2','Depth of the physics','Refit dielectric model only; add surface scattering (IEM); full two-layer model with subsurface and volume terms'],
- ['3','Route to agency data','Dr Hamouda\'s contacts; formal UAEU request to EAD, ADAFSA and TAQA; joint work with agency staff'],
+ ['3','Route to agency data','Existing contacts with the agencies; formal UAEU request to EAD, ADAFSA and TAQA; joint work with agency staff'],
  ['4','Laboratory for 1.2 GHz permittivity','UAEU facility, or a partner lab'],
  ['5','Funding route and duration','Open']]);
+table('nextTbl',['#','Question'],[
+ ['1','Should the prescriptions cover only salinity and water (leaching, timing, crop choice, drainage), or bring sodicity back so gypsum can be recommended?'],
+ ['2','Should sources be gathered on asphalt barriers, gypsum use in UAE or Gulf soils, and ICBA\'s salt-tolerant crop work?'],
+ ['3','Should this be an optional fifth sub-objective, or stay a discussion point?']]);
 table('confTbl',['#','Item'],[
  ['1','NISAR acquisition mode (single, dual or quad-pol) over Al Nahda, Al Khatam, Al Khaznah and Al Foah'],
  ['2','NISAR product status: provisional products confirmed from 17 June 2026; a later validated release reported but not yet confirmed'],
