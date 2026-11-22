@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Al Ain Soil Salinity Proposal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=Source+Sans+3:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  /* Layout idea: one chapter per screen, big claim + short lede, cards open a side panel with the detail and sources */
+  --bg:#f2f5f4; --surface:#ffffff; --ink:#13212b; --muted:#56656f; --line:#d6dedd;
+  --accent:#0b7a75; --accent-soft:#dcefed; --sand:#a8691a; --sand-soft:#f6e9d3;
+  --shadow:0 1px 2px rgba(19,33,43,.06),0 8px 24px rgba(19,33,43,.06);
+  --display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --body:"Source Sans 3","Segoe UI",system-ui,sans-serif;
+  --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1519; --surface:#142027; --ink:#e4edef; --muted:#9caeb5; --line:#26363e;
+    --accent:#40b8ae; --accent-soft:#12302e; --sand:#e2a94f; --sand-soft:#33281a;
+    --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1519; --surface:#142027; --ink:#e4edef; --muted:#9caeb5; --line:#26363e;
+  --accent:#40b8ae; --accent-soft:#12302e; --sand:#e2a94f; --sand-soft:#33281a;
+  --shadow:0 1px 2px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.25); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 var(--body);-webkit-font-smoothing:antialiased}
+a{color:var(--accent)}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px;border-radius:6px}
+
+/* top bar */
+.bar{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.bar-in{max-width:1240px;margin:0 auto;padding:10px 20px;display:flex;align-items:center;gap:16px}
+.brand{font:700 15px/1.2 var(--display);white-space:nowrap}
+.brand small{display:block;font:400 12px/1.3 var(--body);color:var(--muted)}
+nav.chapters{display:flex;gap:4px;overflow-x:auto;flex:1;scrollbar-width:none}
+nav.chapters::-webkit-scrollbar{display:none}
+nav.chapters button{border:0;background:none;padding:7px 11px;border-radius:999px;font-size:14px;color:var(--muted);cursor:pointer;white-space:nowrap}
+nav.chapters button .n{font-family:var(--mono);font-size:11px;margin-right:5px;opacity:.7}
+nav.chapters button:hover{background:var(--accent-soft);color:var(--ink)}
+nav.chapters button[aria-current="true"]{background:var(--ink);color:var(--bg)}
+.tools{display:flex;gap:6px}
+.iconbtn{border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 10px;font-size:13px;cursor:pointer}
+.iconbtn:hover{border-color:var(--accent)}
+.progress{height:3px;background:var(--line)}
+.progress span{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+
+/* chapters */
+main{max-width:1240px;margin:0 auto;padding:28px 20px 24px}
+.foot{max-width:1240px;margin:0 auto;padding:18px 20px 90px;border-top:1px solid var(--line);font-size:13px;color:var(--muted)}
+section.ch{display:none}
+section.ch.on{display:block;animation:rise .35s ease}
+@keyframes rise{from{transform:translateY(8px);opacity:.6}to{transform:none;opacity:1}}
+.kicker{font:500 12px/1 var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin:0 0 12px}
+h1,h2,h3{font-family:var(--display);text-wrap:balance;margin:0}
+h1{font-size:clamp(34px,5vw,60px);line-height:1.04;font-weight:700;letter-spacing:-.01em}
+h2{font-size:clamp(28px,3.6vw,44px);line-height:1.08;font-weight:700;letter-spacing:-.01em;max-width:24ch}
+h3{font-size:20px;line-height:1.2;font-weight:700}
+.lede{font-size:clamp(17px,1.6vw,20px);color:var(--muted);max-width:68ch;margin:14px 0 26px}
+.hint{font-size:13px;color:var(--muted);margin:-12px 0 18px;display:flex;gap:6px;align-items:center}
+.hint b{font-weight:600;color:var(--ink)}
+
+/* cards */
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.grid.g3{grid-template-columns:repeat(auto-fill,minmax(310px,1fr))}
+.card{display:flex;flex-direction:column;gap:8px;text-align:left;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px 18px 16px;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,transform .15s}
+.card:hover{border-color:var(--accent);transform:translateY(-2px)}
+.card .big{font:500 34px/1 var(--mono);color:var(--ink);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.card .big.salt{color:var(--sand)}
+.card .big.water{color:var(--accent)}
+.card .t{font:700 18px/1.25 var(--display)}
+.card .s{font-size:15px;color:var(--muted)}
+.card .more{margin-top:auto;font-size:13px;color:var(--accent);font-weight:600}
+.card .tag{align-self:flex-start;font:500 11px/1 var(--mono);text-transform:uppercase;letter-spacing:.06em;padding:4px 7px;border-radius:5px;background:var(--accent-soft);color:var(--accent)}
+.card .tag.salt{background:var(--sand-soft);color:var(--sand)}
+.statement{margin:26px 0 0;padding:22px 24px;border-left:4px solid var(--sand);background:var(--surface);border-radius:0 14px 14px 0;box-shadow:var(--shadow)}
+.statement p{margin:6px 0 0;font-size:18px;max-width:80ch}
+.subhead{margin:38px 0 14px;display:flex;align-items:baseline;gap:12px}
+.subhead h3{font-size:22px}
+.subhead span{font-size:14px;color:var(--muted)}
+
+/* cover */
+.cover{display:grid;gap:32px;grid-template-columns:1.25fr 1fr;align-items:start}
+.cover .meta{margin-top:18px;font-size:15px;color:var(--muted)}
+.cover .meta b{color:var(--ink)}
+.journey{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:8px;box-shadow:var(--shadow)}
+.journey button{display:grid;grid-template-columns:38px 1fr auto;gap:10px;align-items:center;width:100%;border:0;background:none;padding:11px 12px;border-radius:10px;cursor:pointer;text-align:left}
+.journey button:hover{background:var(--accent-soft)}
+.journey .num{font:500 13px/1 var(--mono);color:var(--accent)}
+.journey .lbl{font-weight:600}
+.journey .lbl small{display:block;font-weight:400;color:var(--muted);font-size:14px}
+.journey .arr{color:var(--muted)}
+.pitch{margin-top:22px;display:grid;gap:10px;grid-template-columns:repeat(3,1fr)}
+.pitch div{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px}
+.pitch b{display:block;font:500 13px/1.2 var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.pitch span{font-size:15px}
+
+/* bars */
+.bars{display:grid;gap:8px;margin:14px 0}
+.barrow{display:grid;grid-template-columns:150px 1fr 64px;gap:10px;align-items:center;font-size:14px}
+.track{height:14px;background:var(--line);border-radius:4px;overflow:hidden}
+.fill{height:100%;background:var(--accent);border-radius:4px}
+.fill.salt{background:var(--sand)}
+.barrow .v{font-family:var(--mono);font-size:13px;text-align:right;font-variant-numeric:tabular-nums}
+
+/* objectives */
+.objective{background:var(--ink);color:var(--bg);border-radius:16px;padding:22px 24px;margin:26px 0 0}
+.objective .kicker{color:color-mix(in srgb,var(--bg) 75%,var(--accent))}
+.objective p{margin:0;font:600 clamp(18px,1.8vw,22px)/1.4 var(--display);max-width:70ch}
+.so .gaps{display:flex;gap:5px;flex-wrap:wrap}
+.so .gaps i{font:500 11px/1 var(--mono);font-style:normal;padding:4px 6px;border-radius:5px;border:1px solid var(--line);color:var(--muted)}
+.card.lit{outline:0}
+.card.dim{opacity:.35}
+.card.glow{border-color:var(--sand);box-shadow:0 0 0 3px var(--sand-soft),var(--shadow)}
+
+/* literature */
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 16px}
+.chip{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:6px 12px;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.study .row{display:flex;justify-content:space-between;gap:8px;font:500 12px/1.2 var(--mono);color:var(--muted)}
+.study .acc{font:500 14px/1.3 var(--mono);color:var(--ink)}
+.study.hidden{display:none}
+
+/* flow */
+.flow{background:var(--surface);border:1px solid var(--line);border-radius:18px;padding:20px;box-shadow:var(--shadow)}
+.flow .row{display:grid;gap:12px;grid-template-columns:repeat(3,1fr)}
+.flow .row.two{grid-template-columns:1fr 1fr;max-width:820px;margin:0 auto}
+.flow .row.one{grid-template-columns:1fr;max-width:640px;margin:0 auto}
+.node{border:1px solid var(--line);background:var(--bg);border-radius:12px;padding:12px 14px;text-align:left;cursor:pointer;transition:border-color .15s,background .15s}
+.node:hover{border-color:var(--accent);background:var(--accent-soft)}
+.node b{display:block;font:700 16px/1.25 var(--display)}
+.node span{display:block;font-size:14px;color:var(--muted);margin-top:3px}
+.node.key{border:2px solid var(--accent);background:var(--accent-soft)}
+.down{display:flex;justify-content:center;padding:6px 0;color:var(--muted)}
+.core{border:1px dashed var(--accent);border-radius:14px;padding:14px;background:color-mix(in srgb,var(--accent-soft) 45%,transparent)}
+.core .lab{font:500 12px/1 var(--mono);text-transform:uppercase;letter-spacing:.07em;color:var(--accent);margin-bottom:10px}
+.core .row{grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch}
+.core .arrow{display:flex;align-items:center;color:var(--accent)}
+
+/* design options */
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.tab{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 14px;cursor:pointer;text-align:left}
+.tab b{display:block;font-family:var(--display)}
+.tab span{font-size:13px;color:var(--muted)}
+.tab[aria-selected="true"]{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+.optpanel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:6px 18px;box-shadow:var(--shadow)}
+.optpanel dl{display:grid;grid-template-columns:170px 1fr;gap:0;margin:0}
+.optpanel dt,.optpanel dd{padding:12px 0;border-bottom:1px solid var(--line);margin:0}
+.optpanel dt{font-weight:600;color:var(--muted);font-size:15px}
+.optpanel dl > :nth-last-child(-n+2){border-bottom:0}
+
+/* tables */
+.tbl{width:100%;border-collapse:collapse;font-size:15px;background:var(--surface);border-radius:12px;overflow:hidden}
+.tblwrap{overflow-x:auto;border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+.tbl th,.tbl td{padding:11px 14px;text-align:left;border-bottom:1px solid var(--line);vertical-align:top}
+.tbl th{font:600 13px/1.2 var(--body);color:var(--muted);text-transform:uppercase;letter-spacing:.04em;background:color-mix(in srgb,var(--bg) 60%,var(--surface))}
+.tbl tr:last-child td{border-bottom:0}
+.tbl tr.click{cursor:pointer}
+.tbl tr.click:hover td{background:var(--accent-soft)}
+.pill{display:inline-block;font:500 12px/1 var(--mono);padding:5px 8px;border-radius:999px;white-space:nowrap}
+.p1{background:var(--sand-soft);color:var(--sand)}
+.p2{background:var(--accent-soft);color:var(--accent)}
+.p3{background:var(--line);color:var(--muted)}
+
+/* big picture */
+.chain{display:grid;grid-template-columns:repeat(4,1fr);gap:0;margin:6px 0 30px}
+.link{position:relative;background:var(--surface);border:1px solid var(--line);padding:18px 18px 18px 22px;min-height:150px}
+.link:first-child{border-radius:14px 0 0 14px}
+.link:last-child{border-radius:0 14px 14px 0}
+.link + .link{border-left:0}
+.link .k{font:500 12px/1 var(--mono);color:var(--accent);text-transform:uppercase;letter-spacing:.07em}
+.link h3{margin:8px 0 6px;font-size:19px}
+.link p{margin:0;font-size:15px;color:var(--muted)}
+.link:not(:last-child)::after{content:"";position:absolute;right:-11px;top:50%;width:20px;height:20px;background:var(--surface);border-top:1px solid var(--line);border-right:1px solid var(--line);transform:translateY(-50%) rotate(45deg);z-index:2}
+.matrix td:first-child{font-weight:600;white-space:nowrap}
+
+/* drawer */
+.scrim{position:fixed;inset:0;background:rgba(10,18,22,.35);opacity:0;pointer-events:none;transition:opacity .2s;z-index:40}
+.scrim.on{opacity:1;pointer-events:auto}
+aside.drawer{position:fixed;top:0;right:0;height:100%;width:min(620px,100%);background:var(--surface);border-left:1px solid var(--line);box-shadow:-12px 0 40px rgba(0,0,0,.12);transform:translateX(102%);transition:transform .25s ease;z-index:50;display:flex;flex-direction:column}
+aside.drawer.on{transform:none}
+.dhead{display:flex;justify-content:space-between;align-items:flex-start;gap:12px;padding:22px 24px 12px;border-bottom:1px solid var(--line)}
+.dhead h3{font-size:24px}
+.dbody{padding:18px 24px 40px;overflow-y:auto}
+.dbody p{margin:0 0 14px;max-width:62ch}
+.dbody ul,.dbody ol{padding-left:20px;margin:0 0 14px}
+.dbody li{margin-bottom:6px}
+.dbody h4{font:700 16px/1.3 var(--display);margin:18px 0 8px}
+.src{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;margin-top:18px}
+.src a{margin-right:10px;display:inline-block}
+.eq{font:500 18px/1.6 var(--mono);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px 16px;overflow-x:auto;white-space:nowrap}
+.note{background:var(--sand-soft);border-radius:10px;padding:12px 14px;font-size:15px}
+
+/* pager */
+.pager{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);display:flex;gap:8px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px;box-shadow:var(--shadow);z-index:15}
+.pager button{border:0;background:var(--bg);border-radius:999px;padding:8px 16px;cursor:pointer;font-weight:600;font-size:14px}
+.pager button:hover{background:var(--accent-soft)}
+.pager button:disabled{opacity:.35;cursor:default}
+.pager .pos{font:500 12px/1 var(--mono);color:var(--muted);padding:0 6px}
+
+@media (max-width:900px){
+  .cover{grid-template-columns:1fr}
+  .chain{grid-template-columns:1fr 1fr}
+  .link{border-radius:0!important;border-left:1px solid var(--line)!important}
+  .link::after{display:none}
+  .core .row{grid-template-columns:1fr}
+  .core .arrow{justify-content:center;transform:rotate(90deg)}
+  .flow .row{grid-template-columns:1fr}
+  .pitch{grid-template-columns:1fr}
+  .brand small{display:none}
+}
+@media (max-width:520px){
+  .chain{grid-template-columns:1fr}
+  .optpanel dl{grid-template-columns:1fr}
+  .optpanel dt{border-bottom:0;padding-bottom:0}
+  .barrow{grid-template-columns:100px 1fr 54px}
+  .tools .iconbtn.fs{display:none}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="bar-in">
+    <div class="brand">Al Ain soil salinity<small>NISAR · permittivity · RT · ML</small></div>
+    <nav class="chapters" id="nav" aria-label="Chapters"></nav>
+    <div class="tools">
+      <button class="iconbtn fs" id="fsBtn" type="button" title="Present full screen">Present</button>
+    </div>
+  </div>
+  <div class="progress"><span id="prog"></span></div>
+</header>
+
+<main id="main">
+
+<!-- 00 COVER -->
+<section class="ch" id="cover" data-label="Overview">
+  <div class="cover">
+    <div>
+      <p class="kicker">Proposal draft for discussion</p>
+      <h1>Monitoring soil salinity under treated wastewater irrigation in Al Ain</h1>
+      <p class="lede">Abu Dhabi is moving Al Ain farms from saline groundwater to treated wastewater, and no programme measures what the switch does to the soil, farm by farm or below the surface. This proposal maps root-zone salinity and soil moisture with NISAR L-band radar, measured soil permittivity and a radiative-transfer model, with machine learning used last.</p>
+      <div class="pitch">
+        <div><b>Question</b><span>Is the switch reclaiming saline farms, or adding salt where the treated water is itself saline?</span></div>
+        <div><b>Approach</b><span>Physics first: lab permittivity and a two-layer RT model interpret NISAR backscatter.</span></div>
+        <div><b>Output</b><span>Seasonal salinity and moisture maps at three depths, with a farm-level early warning.</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="journey" id="journey"></div>
+    </div>
+  </div>
+</section>
+
+<!-- 01 NEED -->
+<section class="ch" id="need" data-label="The need">
+  <p class="kicker">01 · Rationale: the need</p>
+  <h2>Al Ain's farm soils are already past the limits of its hardiest crop</h2>
+  <p class="lede">Salt builds up naturally in a climate with under 100 mm of rain a year, and decades of irrigation with saline groundwater have added to it. Average farm soils now sit two to four times above the salinity threshold of date palm.</p>
+  <p class="hint"><b>Click any card</b> for the detail and its source.</p>
+  <div class="grid">
+    <button class="card" data-d="need-global"><span class="tag">World</span><span class="big salt">10.7%</span><span class="t">of the world's land is salt-affected</span><span class="s">FAO's first global assessment in 50 years; the UAE is among the most affected countries.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="need-water"><span class="tag">Abu Dhabi</span><span class="big water">3%</span><span class="t">of groundwater reserves are fresh</span><span class="s">Pumping runs at 18 to 20 times natural recharge.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="need-alain"><span class="tag">Al Ain</span><span class="big salt">~90%</span><span class="t">of farms around Al Ain had salinity problems</span><span class="s">Al Ain holds about 12,000 farms, nearly half the emirate's.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="need-soil"><span class="tag salt">Soil</span><span class="big salt">8-16 dS/m</span><span class="t">average farm soil salinity</span><span class="s">Date palm's threshold is 4.0 dS/m. EAD reported 50% yield loss even in date palm.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="need-wells"><span class="tag salt">Wells</span><span class="big salt">68%</span><span class="t">of farm wells exceeded 8,000 ppm</span><span class="s">Water levels in some wells have dropped more than 15 m.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="need-abandon"><span class="tag salt">Livelihoods</span><span class="big salt">~8,000</span><span class="t">of 24,394 farms abandoned or nearly so</span><span class="s">Across the emirate, according to ICBA.</span><span class="more">Open detail</span></button>
+  </div>
+</section>
+
+<!-- 02 PROBLEM -->
+<section class="ch" id="problem" data-label="The problem">
+  <p class="kicker">02 · Rationale: the problem</p>
+  <h2>The water is changing faster than anyone can measure the soil</h2>
+  <p class="lede">More than 1,600 farms are moving to treated wastewater. That water is fresher than the wells it replaces, but it is not salt-free, and current monitoring cannot see what happens at farm scale, at root depth or over time.</p>
+  <p class="hint"><b>Click any card</b> to open it.</p>
+  <div class="grid g3">
+    <button class="card" data-d="prob-switch"><span class="tag">Scale</span><span class="big water">1,600+</span><span class="t">farms in ADAFSA's 2024 recycled-water plan</span><span class="s">About 150,000 m³ a day, and about 4,850 wells shut.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="prob-tww"><span class="tag salt">Water quality</span><span class="big salt">3,000-4,000 ppm</span><span class="t">raw wastewater salinity at Al Wathba-2</span><span class="s">Seawater seeps into the sewers, and treatment does not remove it.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="prob-depth"><span class="tag salt">Depth</span><span class="big salt">0.65 vs 11.55</span><span class="t">dS/m irrigation water, with no significant difference in soil EC</span><span class="s">Salt moves with depth and time; one shallow sample can miss the change.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="prob-monitor"><span class="tag">Monitoring</span><span class="big water">664</span><span class="t">soil monitoring sites across the emirate</span><span class="s">Against about 12,000 farms in Al Ain alone. The public salinity maps carry no date.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="prob-radar"><span class="tag">Radar so far</span><span class="big salt">15-17%</span><span class="t">class accuracy for C-band radar in Abu Dhabi</span><span class="s">Standard physics models also failed in extremely arid soil.</span><span class="more">Open detail</span></button>
+    <button class="card" data-d="prob-trust"><span class="tag">Farmers</span><span class="big water">2012 → 2021</span><span class="t">from rejection to acceptance, with no recent measure</span><span class="s">Acceptance depends on communication and visible evidence.</span><span class="more">Open detail</span></button>
+  </div>
+  <div class="statement">
+    <p class="kicker">Problem statement</p>
+    <p>Abu Dhabi is replacing saline groundwater with treated wastewater on thousands of Al Ain farms. Depending on water quality, soil texture and starting condition, the change could reverse salinisation or keep adding salt where the treated water carries its own, and current monitoring cannot see it at farm scale, at root-zone depth or over time. Without that evidence, regulators cannot verify the 2022 standard's "close monitoring" condition, and farmers have no independent proof of what the water is doing to their land.</p>
+  </div>
+</section>
+
+<!-- 03 AIMS -->
+<section class="ch" id="aims" data-label="Gaps and aims">
+  <p class="kicker">03 · Research gaps and objectives</p>
+  <h2>Seven gaps, one objective, four work streams</h2>
+  <p class="lede">The gaps concern what is happening to soil on Al Ain farms and why radar has so far failed to see it. Hover or tap a sub-objective to light up the gaps it closes.</p>
+  <div class="grid" id="gapGrid">
+    <button class="card gap" data-g="G1" data-d="g1"><span class="tag">G1</span><span class="t">Direction and rate of change</span><span class="s">Are switched farms desalinising, holding steady or re-salinising, and how fast?</span></button>
+    <button class="card gap" data-g="G2" data-d="g2"><span class="tag">G2</span><span class="t">Soil moisture in saline soil</span><span class="s">Radar moisture products assume non-saline soil, so salt is read as water.</span></button>
+    <button class="card gap" data-g="G3" data-d="g3"><span class="tag">G3</span><span class="t">Root zone</span><span class="s">How salt moves through 0-30, 30-60 and 60-100 cm after the switch.</span></button>
+    <button class="card gap" data-g="G4" data-d="g4"><span class="tag">G4</span><span class="t">Texture control</span><span class="s">Grain size governs leaching, moisture retention and the radar signal.</span></button>
+    <button class="card gap" data-g="G5" data-d="g5"><span class="tag">G5</span><span class="t">Physics of the radar signal</span><span class="s">Nobody has measured L-band permittivity of Gulf farm soils.</span></button>
+    <button class="card gap" data-g="G6" data-d="g6"><span class="tag">G6</span><span class="t">Attribution</span><span class="s">No study links soil change to switch date and water quality.</span></button>
+    <button class="card gap" data-g="G7" data-d="g7"><span class="tag">G7</span><span class="t">Evidence for trust</span><span class="s">Farmers have no farm-specific evidence of what recycled water does.</span></button>
+  </div>
+  <div class="objective">
+    <p class="kicker">Main objective</p>
+    <p>To measure, map and attribute changes in root-zone soil salinity and soil moisture on Al Ain farms, including those switching from groundwater to treated wastewater, using NISAR L-band radar interpreted through measured soil permittivity, a radiative-transfer model and machine learning.</p>
+  </div>
+  <div class="subhead"><h3>Sub-objectives</h3><span>Each closes specific gaps</span></div>
+  <div class="grid" id="soGrid">
+    <button class="card so" data-gaps="G1 G3 G4" data-d="so1"><span class="tag">SO1</span><span class="t">Evidence base</span><span class="s">A time-stacked ground dataset at three depths on the chosen farms.</span><span class="gaps"><i>G1</i><i>G3</i><i>G4</i></span></button>
+    <button class="card so" data-gaps="G2 G4 G5" data-d="so2"><span class="tag">SO2</span><span class="t">Radar physics</span><span class="s">Lab permittivity, a refitted dielectric model and a tested RT model.</span><span class="gaps"><i>G2</i><i>G4</i><i>G5</i></span></button>
+    <button class="card so" data-gaps="G1 G2 G3" data-d="so3"><span class="tag">SO3</span><span class="t">Maps</span><span class="s">Seasonal multi-depth salinity and moisture maps with uncertainty.</span><span class="gaps"><i>G1</i><i>G2</i><i>G3</i></span></button>
+    <button class="card so" data-gaps="G1 G6 G7" data-d="so4"><span class="tag">SO4</span><span class="t">Attribution and use</span><span class="s">The causal effect of the switch, and a farm-level early warning.</span><span class="gaps"><i>G1</i><i>G6</i><i>G7</i></span></button>
+  </div>
+</section>
+
+<!-- 04 LITERATURE -->
+<section class="ch" id="literature" data-label="Literature">
+  <p class="kicker">04 · What has been done</p>
+  <h2>Twenty studies mapped salinity; almost none looked below the surface</h2>
+  <p class="lede">Most published maps use optical indices and machine learning on topsoil. Radar studies are fewer and mostly C-band, and the physics-based ones show standard models breaking down in extremely arid soil. Filter by approach, then open a study.</p>
+  <div class="chips" id="litChips"></div>
+  <div class="grid" id="litGrid"></div>
+  <div class="subhead"><h3>What the literature leaves open</h3><span>The gaps this proposal targets</span></div>
+  <div class="grid g3">
+    <button class="card" data-d="open-depth"><span class="tag salt">Depth</span><span class="big salt">17 of 20</span><span class="t">map topsoil only</span><span class="s">The one multi-depth optical study loses accuracy with depth.</span></button>
+    <button class="card" data-d="open-freq"><span class="tag">Frequency</span><span class="big water">0</span><span class="t">studies use a dense L-band time series</span><span class="s">All L-band work used ALOS-2 PALSAR-2 snapshots.</span></button>
+    <button class="card" data-d="open-physics"><span class="tag">Physics</span><span class="big water">0</span><span class="t">report L-band permittivity of Gulf farm soils</span><span class="s">No study adds subsurface scattering or measured grain size.</span></button>
+    <button class="card" data-d="open-water"><span class="tag">Water source</span><span class="big water">0</span><span class="t">attribute salinity change to a change of irrigation water</span><span class="s">The closest separates irrigation-induced from natural salinity.</span></button>
+    <button class="card" data-d="open-gulf"><span class="tag salt">Gulf farms</span><span class="big salt">5</span><span class="t">UAE and Gulf studies, all optical or C-band</span><span class="s">Single-date and mostly non-agricultural.</span></button>
+    <button class="card" data-d="open-local"><span class="tag">Al Ain, 2022 to 2026</span><span class="big water">3</span><span class="t">recent local studies set the context</span><span class="s">GIS land ranking, C-band radar, and an irrigation-contrast farm study.</span></button>
+  </div>
+</section>
+
+<!-- 05 APPROACH -->
+<section class="ch" id="approach" data-label="Approach">
+  <p class="kicker">05 · Suggested methodology</p>
+  <h2>Physics first, machine learning second</h2>
+  <p class="lede">Lab-measured permittivity fixes the dielectric model. A two-layer radiative-transfer model links NISAR backscatter to moisture, salinity, texture and a subsurface layer. A hybrid model then maps salinity by depth, and an impact design attributes change to the switch. Click any box.</p>
+  <div class="flow" id="flow">
+    <div class="row">
+      <button class="node" data-d="f-sat"><b>Satellite data</b><span>NISAR GCOV and SME2, Sentinel-1, Sentinel-2, Landsat, DEM</span></button>
+      <button class="node" data-d="f-field"><b>Field and lab</b><span>Cores at three depths, EM38, probes, lab permittivity at 1.2 GHz</span></button>
+      <button class="node" data-d="f-agency"><b>Agency data</b><span>EAD survey, soil survey, ADAFSA switch dates, TAQA water quality</span></button>
+    </div>
+    <div class="down" aria-hidden="true">▼</div>
+    <div class="row">
+      <button class="node" data-d="f-pre"><b>Preprocessing</b><span>Calibration, speckle filtering, spectral and thermal indices</span></button>
+      <button class="node" data-d="f-tex"><b>Texture mapping</b><span>Digital soil map of sand, silt and clay by depth</span></button>
+      <button class="node" data-d="f-treat"><b>Treatment record</b><span>Switch date and farm-gate EC and SAR per farm</span></button>
+    </div>
+    <div class="down" aria-hidden="true">▼</div>
+    <div class="core">
+      <div class="lab">Physics core · calibrated on 15-20 subset farms</div>
+      <div class="row">
+        <button class="node key" data-d="f-diel"><b>Dielectric model</b><span>Refit on lab permittivity, with a saline-water term</span></button>
+        <div class="arrow" aria-hidden="true">▶</div>
+        <button class="node key" data-d="f-rt"><b>Two-layer RT model</b><span>Surface, subsurface, volume and canopy terms</span></button>
+        <div class="arrow" aria-hidden="true">▶</div>
+        <button class="node key" data-d="f-emu"><b>Emulator</b><span>Neural network trained on the look-up table</span></button>
+      </div>
+    </div>
+    <div class="down" aria-hidden="true">▼</div>
+    <div class="row two">
+      <button class="node" data-d="f-inv"><b>Joint inversion</b><span>Moisture, real and imaginary permittivity, front depth</span></button>
+      <button class="node" data-d="f-sm"><b>Refined soil moisture</b><span>Salinity-corrected NISAR moisture product</span></button>
+    </div>
+    <div class="down" aria-hidden="true">▼</div>
+    <div class="row one">
+      <button class="node key" data-d="f-hyb"><b>Hybrid salinity model</b><span>Physics features plus covariates, quantile regression forest per depth, benchmarked without physics</span></button>
+    </div>
+    <div class="down" aria-hidden="true">▼</div>
+    <div class="row one">
+      <button class="node" data-d="f-maps"><b>Seasonal salinity and moisture maps</b><span>ECe at 0-30, 30-60 and 60-100 cm, with uncertainty per pixel</span></button>
+    </div>
+    <div class="down" aria-hidden="true">▼</div>
+    <div class="row two">
+      <button class="node" data-d="f-ew"><b>Early-warning layer</b><span>Crop-threshold exceedance and leaching hotspots</span></button>
+      <button class="node" data-d="f-att"><b>Attribution</b><span>Staggered difference-in-differences against controls</span></button>
+    </div>
+  </div>
+
+  <div class="subhead"><h3>Study design options</h3><span>Open for discussion: the same methods, different sites and first question</span></div>
+  <div class="tabs" role="tablist" id="optTabs">
+    <button class="tab" role="tab" aria-selected="true" data-o="A"><b>A. TWW attribution</b><span>Al Nahda and 2024 rollout farms</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-o="B"><b>B. Al Foah calibration</b><span>Contrasting irrigation salinity</span></button>
+    <button class="tab" role="tab" aria-selected="false" data-o="C"><b>C. Staged: B, then A</b><span>Calibrate, then attribute</span></button>
+  </div>
+  <div class="optpanel" id="optPanel" role="tabpanel"></div>
+</section>
+
+<!-- 06 DATA -->
+<section class="ch" id="data" data-label="Data">
+  <p class="kicker">06 · Data</p>
+  <h2>All satellite data are free; the deciding ground data must be requested</h2>
+  <p class="lede">NISAR, Sentinel and Landsat are open. Whether attribution works depends on per-farm switch dates and water quality held by ADAFSA and TAQA, and on EAD's survey points. Click a row for detail.</p>
+  <div class="subhead"><h3>Satellite data</h3><span>Essential first, then desired</span></div>
+  <div class="tblwrap"><table class="tbl" id="satTbl"></table></div>
+  <div class="subhead"><h3>Ground data the project collects</h3></div>
+  <div class="tblwrap"><table class="tbl" id="groundTbl"></table></div>
+  <div class="subhead"><h3>UAE data to request</h3><span>Priority 1 decides whether attribution works</span></div>
+  <div class="tblwrap"><table class="tbl" id="reqTbl"></table></div>
+</section>
+
+<!-- 07 OUTCOMES -->
+<section class="ch" id="outcomes" data-label="Outcomes">
+  <p class="kicker">07 · Expected outcomes</p>
+  <h2>Farm-by-farm evidence of what treated water does to the soil</h2>
+  <p class="lede">The project would show how soil salinity and moisture on Al Ain farms change after the switch, and where intervention is needed. Outcomes follow the four sub-objectives.</p>
+  <div class="grid g3">
+    <button class="card" data-d="o-data"><span class="tag">SO1</span><span class="t">An open, time-stacked dataset</span><span class="s">ECe, SAR, ions, texture, moisture and farm-gate water quality, co-located with NISAR overpasses.</span></button>
+    <button class="card" data-d="o-perm"><span class="tag">SO2</span><span class="t">First L-band permittivity of Gulf farm soils</span><span class="s">Across moisture, salinity and texture, with a dielectric model refitted to them.</span></button>
+    <button class="card" data-d="o-scat"><span class="tag">SO2</span><span class="t">A tested answer on subsurface scattering</span><span class="s">Whether the extra terms matter for salinity retrieval in hyper-arid sandy soil.</span></button>
+    <button class="card" data-d="o-sm"><span class="tag">SO2</span><span class="t">Salinity-corrected soil moisture</span><span class="s">A refined NISAR product for the study farms, with the measured bias of standard retrievals.</span></button>
+    <button class="card" data-d="o-maps"><span class="tag">SO3</span><span class="t">Seasonal maps at three depths</span><span class="s">ECe and moisture with per-pixel uncertainty, plus a measured gain over ML alone.</span></button>
+    <button class="card" data-d="o-att"><span class="tag">SO4</span><span class="t">The first causal estimate of the switch</span><span class="s">By years since switch, texture and water quality, with an early-warning layer for ADAFSA.</span></button>
+  </div>
+  <div class="subhead"><h3>Suggested publications</h3></div>
+  <div class="tblwrap"><table class="tbl" id="pubTbl"></table></div>
+  <div class="subhead"><h3>Risks and fallbacks</h3></div>
+  <div class="tblwrap"><table class="tbl" id="riskTbl"></table></div>
+</section>
+
+<!-- 08 BIG PICTURE -->
+<section class="ch" id="big-picture" data-label="Big picture">
+  <p class="kicker">08 · The big picture</p>
+  <h2>From one farm's soil to the nation's water strategy</h2>
+  <p class="lede">Every national water target depends on treated wastewater being safe to put on farmland at scale. This project supplies the soil evidence that each level needs, from a farmer deciding where to leach to the federal reporting on SDG targets.</p>
+  <div class="chain">
+    <div class="link"><span class="k">Farm</span><h3>Know the soil</h3><p>Root-zone salinity and moisture per field: improving or not, where to leach, which crops fit.</p></div>
+    <div class="link"><span class="k">Emirate</span><h3>Monitor the rollout</h3><p>Every farm covered, not a sample: where reuse reclaims land and which farms to connect next.</p></div>
+    <div class="link"><span class="k">Nation</span><h3>Meet the targets</h3><p>Evidence behind 95% reuse, 100% recycled-water use and sustainable local food production.</p></div>
+    <div class="link"><span class="k">Global</span><h3>Report on the SDGs</h3><p>Safe water reuse (SDG 6.3) and land degradation neutrality (SDG 15.3).</p></div>
+  </div>
+  <div class="subhead"><h3>Policy targets this project serves</h3><span>Click to see the link</span></div>
+  <div class="grid g3">
+    <button class="card" data-d="bp-wss"><span class="tag">UAE · 2036</span><span class="big water">95%</span><span class="t">Water Security Strategy 2036</span><span class="s">Reuse of treated water to 95%; total water demand cut by 21%.</span></button>
+    <button class="card" data-d="bp-rwp"><span class="tag">Abu Dhabi · 2030</span><span class="big water">100%</span><span class="t">Recycled Water Policy</span><span class="s">Raise recycled-water use to 100% by 2030 (DoE, 2019).</span></button>
+    <button class="card" data-d="bp-std"><span class="tag">ADAFSA · 2022</span><span class="big water">All crops</span><span class="t">Agricultural recycled-water standard</span><span class="s">Unrestricted irrigation of all crops, under close monitoring.</span></button>
+    <button class="card" data-d="bp-food"><span class="tag">UAE · 2051</span><span class="big water">2051</span><span class="t">National Food Security Strategy</span><span class="s">Sustainable local production and practices that maintain ecosystems.</span></button>
+    <button class="card" data-d="bp-sdg6"><span class="tag">UN</span><span class="big water">SDG 6.3</span><span class="t">Safe water reuse</span><span class="s">Measured soil outcomes of reuse in agriculture.</span></button>
+    <button class="card" data-d="bp-sdg15"><span class="tag">UN</span><span class="big water">SDG 15.3</span><span class="t">Land degradation neutrality</span><span class="s">Tracking recovery of degraded and abandoned farmland.</span></button>
+  </div>
+  <div class="subhead"><h3>Who benefits</h3></div>
+  <div class="tblwrap"><table class="tbl matrix" id="benTbl"></table></div>
+</section>
+
+<!-- 09 DISCUSSION -->
+<section class="ch" id="discussion" data-label="Discussion">
+  <p class="kicker">09 · For discussion today</p>
+  <h2>Five decisions and nine items to confirm</h2>
+  <p class="lede">The proposal is deliberately open on design, depth of physics, data route, laboratory and funding. These are the choices to settle together.</p>
+  <div class="tblwrap"><table class="tbl" id="decTbl"></table></div>
+  <div class="subhead"><h3>Items to confirm before submission</h3></div>
+  <div class="tblwrap"><table class="tbl" id="confTbl"></table></div>
+</section>
+
+</main>
+<footer class="foot">Prepared by Shahid S. Shafai</footer>
+
+<div class="pager" aria-label="Chapter navigation">
+  <button id="prev" type="button">← Back</button>
+  <span class="pos" id="pos">1 / 10</span>
+  <button id="next" type="button">Next →</button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-labelledby="dTitle">
+  <div class="dhead"><div><p class="kicker" id="dKick"></p><h3 id="dTitle"></h3></div><button class="iconbtn" id="dClose" type="button">Close</button></div>
+  <div class="dbody" id="dBody"></div>
+</aside>
+
+<script>
+/* ---------- sources ---------- */
+const S={
+ fao:['FAO, 2024','https://www.fao.org/global-soil-partnership/resources/highlights/detail/en/c/1730089'],
+ dte:['Down To Earth, reporting FAO 2024','https://www.downtoearth.org.in/food/excess-salt-in-soil-impacts-14-billion-hectares-of-land-globally-risking-food-security-finds-un-report'],
+ gn25:['Gulf News, Sep 2025 (EAD)','https://gulfnews.com/uae/environment/abu-dhabi-turns-to-artificial-intelligence-to-tackle-soil-salinity-crisis-1.500278606'],
+ gn21:['Gulf News, Jun 2021','https://gulfnews.com/uae/environment/abu-dhabi-building-two-massive-new-pipelines-to-enable-use-of-treated-wastewater-in-4100-farms-1.79569243'],
+ nat09:['The National, May 2009','https://www.thenationalnews.com/uae/environment/soil-samples-indicate-land-degradation-1.547441'],
+ nat12:['The National, Sep 2012','https://thenationalnews.com/uae/environment/abu-dhabi-wasting-water-that-could-be-used-to-grow-food-1.405039'],
+ insas:['EAD presentation to FAO INSAS','https://www.fao.org/fileadmin/user_upload/GSP/INSAS/1st_meeting/insas_United_Arab_Emirates-_updated_version.pdf'],
+ carr:['Carr, 2013','https://www.cambridge.org/core/journals/experimental-agriculture/article/abs/water-relations-and-irrigation-requirements-of-the-date-palm-phoenix-dactylifera-l-a-review/C68AAC149C01FEF02B15D00823B7CEB3'],
+ icba:['ICBA project brief','https://iiqp.biosaline.org/sites/default/files/project_brief_reclamation_of_degraded_agricultural_lands_in_v3-eng-web.pdf'],
+ gsowa:['EAD, FAO GSOWA 2023','https://fao.org/fileadmin/user_upload/GSP/GSOWA23/GSOWA23_Presentations/DAY_2/Theme2-03-_Bayan_Athamneh-GSOWA23-_Abu_Dhabi_s_Integrated_Approach.pdf'],
+ sul:['Suleiman et al., 2010','https://research.uaeu.ac.ae/en/publications/evaluation-of-agriculture-activities-on-groundwater-of-al-foah-ar/'],
+ awc:['Arab Water Council case study','https://ncwr.arabwatercouncil.org/reuse-of-treated-waste-water-success-stories/al-wathbah-2-wastewater-treatment-plant-and-abu-dhabi-irrigation-scheme/'],
+ ham:['Al Hamedi et al., 2020','https://research.uaeu.ac.ae/en/publications/evaluation-of-treated-wastewater-irrigation-on-the-productivity-o/'],
+ log:['Loganathachetti et al., 2022','https://pmc.ncbi.nlm.nih.gov/articles/PMC9388049'],
+ wang24:['Wang et al., 2024','https://orbi.uliege.be/handle/2268/333174'],
+ scad:['SCAD Water Statistics 2019','https://scad.gov.ae/documents/d/guest/water-20statistics_2019_annual_yearly_en-pdf-1'],
+ wam24:['WAM, Jan 2024','https://wam.ae/en/article/b11r7su-adafsa-launches-ambitious-plan-expand-recycled'],
+ zaw:['Zawya, Jan 2024','https://www.zawya.com/en/press-release/government-news/adafsa-launches-ambitious-plan-to-expand-recycled-water-use-in-abu-dhabi-farms-j3gm281j'],
+ kt:['Khaleej Times','https://www.khaleejtimes.com/environment/uae-treated-wastewater-to-irrigate-over-4000-farms-forests'],
+ gb:['Gulf Business, Jan 2024','https://gulfbusiness.com/en/2024/abu-dhabi/abu-dhabi-to-use-recycled-water-across-1600-farms'],
+ ali25:['Aletihad, Oct 2025','https://en.aletihad.ae/news/uae/4610282/javasxript:'],
+ ali26:['Aletihad, Apr 2026','https://en.aletihad.ae/news/uae/4655899/javasxript:'],
+ admo:['Abu Dhabi Media Office, Jan 2024','https://www.mediaoffice.abudhabi/en/environment/abu-dhabi-agriculture-and-food-safety-authority-to-supply-recycled-water-to-1600-farms-in-the-emirate/'],
+ ram:['Ramadan et al., 2026','https://doi.org/10.3389/fagro.2026.2000470'],
+ abu26:['Abuelgasim et al., 2026','https://doi.org/10.5194/isprs-archives-XLVIII-4-W17-2025-361-2026'],
+ gao:['Gao et al., 2021','https://doi.org/10.3390/rs13030417'],
+ nasa:['NASA NISAR','https://science.nasa.gov/mission/nisar/mission-overview/'],
+ asf:['ASF, Jul 2026','https://asf.alaska.edu/notices/nisar-l-band-data-now-publicly-available/'],
+ asfd:['ASF NISAR docs','https://nisar-docs.asf.alaska.edu/availability-overview/'],
+ arset:['NASA ARSET 2026','https://www.earthdata.nasa.gov/s3fs-public/2026-07/arset-2026-nisar-part2.pdf'],
+ abd:['Abdelrahman et al., 2020','https://doi.org/10.1007/s10668-019-00551-w'],
+ chf:['Chfadi et al., 2021','https://doi.org/10.3390/w13101391'],
+ bat:['Batarseh et al., 2021','https://pmc.ncbi.nlm.nih.gov/articles/PMC8455979'],
+ wss:['UAE Water Security Strategy 2036','https://beta.government.ae/en/about-the-uae/strategies-initiatives-and-awards/strategies-plans-and-visions/environment-and-energy/the-uae-water-security-strategy-2036'],
+ doe:['DoE Abu Dhabi, 2021','https://www.doe.gov.ae/en/Media-Centre/News/WWD-2021-Undersecretary-Statement'],
+ fss:['National Food Security Strategy 2051','https://u.ae/en/about-the-uae/strategies-initiatives-and-awards/strategies-plans-and-visions/environment-and-energy/national-food-security-strategy-2051'],
+ chen:['Chen et al., 2003','https://doi.org/10.1109/TGRS.2002.807587'],
+ att:['Attema and Ulaby, 1978','https://doi.org/10.1029/RS013i002p00357'],
+ cal:['Callaway and Sant\'Anna, 2021','https://doi.org/10.1016/j.jeconom.2020.12.001'],
+ atlas:['Gulf News, 2019','https://gulfnews.com/uae/environment/first-ever-abu-dhabi-groundwater-atlas-launched-1.61476657'],
+ wam22:['WAM, Apr 2022','https://www.wam.ae/en/details/1395303040121'],
+ icbas:['ICBA soil survey','https://www.biosaline.org/projects/soil-survey-emirate-abu-dhabi'],
+ dorn:['Dornier Group','https://dornier-group.com/?p=300940'],
+ sdi:['AD-SDI open data','https://arcgis.sdi.abudhabi.ae/agspublish/rest/services/OpenData/ADSDI_OpenData/MapServer/151'],
+ ktn:['Khaleej Times (NCM)','https://www.khaleejtimes.com/weather/uae-ncm-infrastructure-includes-over-100-weather-stations-9-radars'],
+ icb2:['ICBA brief (181 farms)','https://iiqp.biosaline.org/sites/default/files/Projectbrieffiles/Land_Reclamation-Project_Brief-Final-2.pdf'],
+ edp:['WAM, Oct 2025','https://www.wam.ae/en/article/bmbenrg-ead-launches-environmental-data-platform']
+};
+const src=(...k)=>'<div class="src">Sources: '+k.map(x=>`<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join('')+'</div>';
+const bars=(rows,max)=>'<div class="bars">'+rows.map(r=>`<div class="barrow"><span>${r[0]}</span><div class="track"><div class="fill ${r[3]||''}" style="width:${Math.max(1.5,r[1]/max*100)}%"></div></div><span class="v">${r[2]}</span></div>`).join('')+'</div>';
+
+/* ---------- detail content ---------- */
+const D={
+'need-global':['World and UAE','Salt-affected soils',`<p>FAO's first global assessment of salt-affected soils in 50 years puts them at 1,381 million ha, or 10.7% of the world's land, with about 10% of irrigated cropland affected. In the worst-affected countries, salinity can cut yields of crops such as rice or beans by up to 70%.</p><p>Reporting on the same assessment lists the UAE among the countries most affected by salinity and sodicity combined, at 60.5% of land area.</p>${src('fao','dte')}`],
+'need-water':['Abu Dhabi','Groundwater is shrinking and salty',`<p>Rainfall averages under 100 mm a year and evaporation is high, so salt builds up even without irrigation. Saline groundwater and flood irrigation add to it.</p><p>Groundwater is pumped at 18 to 20 times its natural recharge. Of the remaining reserves:</p>${bars([['Fresh',3,'3%'],['Brackish',18,'18%'],['Highly saline',79,'79%','salt']],100)}${src('gn25','gn21')}`],
+'need-alain':['Al Ain','The centre of the problem',`<p>Al Ain has about 12,000 farms, nearly half of the emirate's roughly 25,000.</p><p>In an EAD-backed study, about 90% of farms around Al Ain had salinity problems, and only 11% had soil below 4 dS/m.</p>${src('gn21','nat09')}`],
+'need-soil':['Soil survey','Soils beyond crop limits',`<p>EAD's soil salinity survey ran from late 2016 to the end of 2018 and covered 4,000 farms: 15,020 soil field measurements, 3,585 irrigation-water measurements and 4,000 laboratory analyses of salinity, pH, SAR and CEC. Average soil salinity was 8 to 16 dS/m, which FAO classes as highly saline, and the survey reported a 50% yield reduction even in salt-tolerant crops such as date palm.</p><h4>Against the date palm threshold (dS/m)</h4>${bars([['Date palm threshold',4,'4.0'],['Average farm soil, low',8,'8','salt'],['Average farm soil, high',16,'16','salt'],['Al Dhafra, 60% of samples',40,'> 40','salt']],40)}<p>Date palm is usually given a threshold of 4.0 dS/m in the saturated soil extract, and recent evidence suggests it may tolerate less. Average farm soils are two to four times over the threshold of the region's most salt-tolerant crop.</p>${src('insas','carr','gn25')}`],
+'need-wells':['Irrigation water','The wells drive it',`<p>On 68% of farms around Al Ain, well water exceeded 8,000 ppm. Over-abstraction keeps making it worse: of about 100,000 wells in the emirate, some show water-level declines of more than 15 m, with falling quality and rising salinity. Around 70% of Al Ain city lies in depleted areas where agricultural water use cannot grow.</p><p>North of Al Ain, UAEU researchers sampled 48 production wells in Al Foah and found about 82% brackish and 18% fresh, and attributed the rising salinity to intensive agriculture.</p>${src('nat09','gsowa','gn21','sul')}`],
+'need-abandon':['Livelihoods','Farms are being abandoned',`<p>Of the emirate's 24,394 farms, around 8,000 have been abandoned or nearly abandoned. Salinity is a leading reason land goes out of production, and recovering it is one aim of the National Food Security Strategy 2051.</p>${src('icba')}`],
+'prob-switch':['The switch','Fast and large',`<p>Recycled-water irrigation began with five pilot farms in 2007, and more than 1,500 farms were using it by 2022. Since 2012, 143 farms in Al Nahda have run on advanced-treated water from Al Mafraq, about 12,000 m³ a day.</p><p>In January 2024, ADAFSA announced recycled-water delivery to more than 1,600 farms in Al Khatam, Al Khaznah and Al Nahda: about 150,000 m³ a day, or 73 m³ per farm per day, with about 4,850 wells shut. EAD's 2021 to 2025 plan was larger, at 250,000 m³ a day to 4,015 farms and 32 forest areas. Al Ain reused 60.6 of the 61.3 million m³ it treated in 2019.</p><h4>Abu Dhabi agriculture's water sources today</h4>${bars([['Groundwater',81.4,'81.4%','salt'],['Desalinated',18,'18%'],['Recycled',0.6,'0.6%']],100)}<p>Farms switch on different dates, so neighbouring soils now follow different paths. For research, that staggered rollout is a natural experiment.</p>${src('ali25','admo','wam24','zaw','kt','scad','gb')}`],
+'prob-tww':['Water quality','Treated water carries salt too',`<p>At Al Wathba-2, seawater seeping into the sewer network raises raw wastewater salinity to 3,000 to 4,000 ppm, and the plant does not remove it. That is still fresher than the 8,000+ ppm wells it replaces, so leaching should lower soil salinity on many farms.</p><p>A UAEU wheat trial, however, found calcium, sodium, chloride and sulphate significantly higher in soil after irrigation with Al Ain treated wastewater.</p><p>A global meta-analysis found that TWW raised soil SAR by 71 ± 6% and EC by 51 ± 5% compared with conventional water, with texture changing the size of the response. Those comparisons were against fresher water than Al Ain's wells.</p><div class="note">Farm-gate EC and SAR of Al Ain's treated water are not published; they are a priority request to TAQA Water Solutions.</div>${src('awc','ham','wang24')}`],
+'prob-depth':['Depth and time','Water salinity does not predict soil salinity',`<p>A UAEU study of 14 date-palm farms in the Al Ain oasis compared seven farms on non-saline water (0.65 dS/m) with seven on saline groundwater (11.55 dS/m). Soil EC and pH at 20 to 30 cm did not differ significantly between the groups.</p><p>Salt moves with depth and time, so a single shallow sample can miss the change. This is why the proposal samples three depths repeatedly.</p>${src('log')}`],
+'prob-monitor':['Monitoring','Sparse, shallow and undated',`<p>EAD runs a substantial programme: 664 sites, 1,376 samples a year, 36 thematic maps, and a satellite, drone and AI project fully rolled out at the end of 2023. Four limits remain.</p><ol><li><b>Density.</b> 664 sites across the emirate against about 12,000 farms in Al Ain alone. The 4,000-farm survey (2016 to 2018) was a single snapshot.</li><li><b>Depth.</b> Optical satellites and drones see the top millimetres of bare soil, or the canopy, and miss the root zone.</li><li><b>Dating.</b> The public EAD salinity layers (AD-SDI 181 for 0-50 cm, 180 for 50-100 cm) carry no survey date: 505 shallow polygons, 7 generalized deep ones, no validation statistics. Importing them in QGIS confirmed the attributes are static.</li><li><b>Attribution.</b> No product links soil change on a farm to the date and quality of its switch.</li></ol>${src('gn25','ram')}`],
+'prob-radar':['Radar so far','Radar has been tried and has struggled',`<p>A 2026 study in western Abu Dhabi related Sentinel-1 C-band backscatter and H-alpha parameters to field EC. The best regression reached R² = 0.59 (entropy), and salinity classes were correct only 17% and 15% of the time. The authors blamed dual-pol data and models that ignored permittivity, roughness and moisture.</p><p>In extremely arid Qinghai, standard dielectric and IEM models predicted only a weak salinity effect, while measured backscatter varied far more. The authors traced it to dielectric models built for wet soils.</p><h4>Why NISAR changes this</h4><p>NISAR, launched on 30 July 2025, is the first L-band SAR with 12-day repeat and free global data. Its 24 cm wavelength penetrates vegetation and dry soil more deeply than C-band. Calibrated provisional products have been public since 20 July 2026, for acquisitions from 17 June 2026, including a 200 m soil moisture product.</p>${src('abu26','gao','nasa','asf','arset')}`],
+'prob-trust':['Farmers','Trust has improved but is unmeasured',`<p>In 2012 an ICBA scientist reported that, in an ICBA survey, all farmers responded negatively to reclaimed water and very few used it. By 2021, officials said many farm owners had overcome their initial reluctance.</p><p>Public surveys show conditional support: 1,304 UAE residents were positive about TWW for some agricultural uses, and a UAEU-led survey of 1,426 Al Ain residents found communication to be the main lever for acceptance. No recent survey of Al Ain farmers was found.</p>${src('nat12','gn21','abd','chf')}`],
+g1:['Gap G1','Direction and rate of change',`<p>Nobody knows, farm by farm, whether soils on switched farms are desalinising, holding steady or re-salinising, or how fast.</p><p><b>Why it matters:</b> it decides whether the rollout is reclaiming land or only slowing decline.</p><p><b>Who needs it:</b> ADAFSA, EAD, farmers.</p>`],
+g2:['Gap G2','Soil moisture in saline soil',`<p>Standard radar moisture retrievals assume non-saline soil, so salt can be read as water, and no corrected product exists for Gulf farms.</p><p><b>Why it matters:</b> moisture governs leaching and irrigation scheduling, and it is the main confounder of the radar salinity signal.</p><p><b>Who needs it:</b> NISAR users, irrigation planners, ADAFSA.</p>`],
+g3:['Gap G3','Root zone',`<p>How salt moves with depth after the switch (0-30, 30-60 and 60-100 cm) goes unobserved between surveys, and water salinity alone does not predict shallow soil salinity.</p><p><b>Why it matters:</b> date palm and fodder respond to root-zone salinity; salt pushed deeper heads for the aquifer.</p><p><b>Who needs it:</b> farmers, EAD.</p>${src('log')}`],
+g4:['Gap G4','Texture control',`<p>Grain size governs leaching, moisture retention and the radar signal, but is not mapped at farm scale in Al Ain.</p><p><b>Why it matters:</b> it explains why neighbouring farms respond differently to the same water.</p><p><b>Who needs it:</b> researchers, ADAFSA advisory.</p>`],
+g5:['Gap G5','Physics of the radar signal',`<p>Standard dielectric and scattering models failed in extremely arid saline soil, and C-band empirical models failed in Abu Dhabi. No one has measured L-band permittivity of Gulf farm soils.</p><p><b>Why it matters:</b> without it, any radar salinity map is an unexplained correlation.</p><p><b>Who needs it:</b> the remote sensing community, NISAR users.</p>${src('gao','abu26')}`],
+g6:['Gap G6','Attribution',`<p>No study links a farm's soil change to its switch date and water quality, separated from weather, crop and management.</p><p><b>Why it matters:</b> policy cannot evaluate the 100% reuse target or the 2022 standard without it.</p><p><b>Who needs it:</b> DoE, ADAFSA, EAD.</p>`],
+g7:['Gap G7','Evidence for trust',`<p>Farmers have no independent, farm-specific evidence of what recycled water does to their soil.</p><p><b>Why it matters:</b> acceptance depends on communication.</p><p><b>Who needs it:</b> farmers, ADAFSA extension.</p>${src('chf')}`],
+so1:['SO1 · closes G1, G3, G4','Evidence base',`<p>Build a time-stacked ground dataset on the chosen farms: ECe, SAR, ionic composition, texture and moisture at three depths, plus farm-gate water EC and SAR. Campaigns are timed to NISAR overpasses so ground and radar see the same soil state.</p>`],
+so2:['SO2 · closes G2, G4, G5','Radar physics',`<p>Measure complex permittivity of the study soils at about 1.2 GHz across moisture, salinity and texture; refit the dielectric model; then simulate L-band surface, subsurface and volume scattering and test which terms the NISAR data need. Use the result to refine the NISAR soil moisture product over the study area.</p>`],
+so3:['SO3 · closes G1, G2, G3','Maps',`<p>Combine the physics outputs with NISAR, optical and terrain covariates in a hybrid model that produces seasonal, multi-depth ECe and soil moisture maps with uncertainty.</p>`],
+so4:['SO4 · closes G1, G6, G7','Attribution and use',`<p>Under design A or C, estimate the effect of the switch with a before-after-control-impact (difference-in-differences) design across the staggered rollout. Turn the maps into a farm-level early-warning layer and farmer advisories with ADAFSA and EAD.</p>`],
+'open-depth':['Literature gap','Depth',`<p>17 of the 20 studies map topsoil only. The one multi-depth optical study (Zhang et al., 2023) saw validation R² fall from 0.707 at the surface to 0.534 at 40-60 cm, so optical covariates say less and less about salt below the surface.</p>`],
+'open-freq':['Literature gap','Frequency',`<p>The L-band studies (Gao 2021, Muhetaer 2022, Wei 2022, Zhao 2023) all use ALOS-2 PALSAR-2 snapshots. None uses a dense L-band time series of the kind NISAR now provides every 12 days.</p>`],
+'open-physics':['Literature gap','Physics',`<p>Standard dielectric and IEM models failed in extremely arid soil (Gao et al., 2021). No study adds subsurface or volume scattering or measured grain size to the forward model, and none reports L-band permittivity measured on Gulf farm soils.</p>`],
+'open-water':['Literature gap','Water source',`<p>No study attributes salinity change to a change in irrigation water. The closest, Ravi and Periasamy (2021), used imaginary permittivity to separate irrigation-induced from naturally upwelling salinity, close in concept to separating groundwater and TWW effects.</p>`],
+'open-gulf':['Literature gap','Gulf farms',`<p>The UAE and Gulf studies (Bannari 2018, Abuelgasim and Ammad 2019, Al-Ali 2021, Alqasemi 2021, and the 2026 C-band study) are optical or C-band, single-date and mostly non-agricultural.</p>`],
+'open-local':['Context','Recent work in Al Ain and Abu Dhabi',`<h4>Ramadan et al., 2026 (Frontiers in Agronomy)</h4><p>A UAEU team with two ADAFSA co-authors ranked land in the Al Ain region for date palm expansion in a rule-based GIS model using the EAD salinity layers. Salinity downgraded 13.53% of the footprint, and the generalized deep layer changed no final class. No irrigation-water quality, no field validation, and the layers are undated. This proposal measures salinity where they used mapped classes.</p><h4>Abuelgasim, El Kamali and Aldhaheri, 2026 (ISPRS Archives)</h4><p>Sentinel-1 C-band in western Abu Dhabi: R² of 0.59 at best and 15 to 17% class accuracy. Their suggested next steps, fuller polarimetry and more soil parameters, are part of this design.</p><h4>Loganathachetti et al., 2022 (Frontiers in Plant Science)</h4><p>A soil microbiology study with a ready irrigation contrast in the Al Ain oasis: seven farms on 0.65 dS/m water and seven on 11.55 dS/m, sampled in March 2020 at 20 to 30 cm. Soil EC did not differ significantly, and farm coordinates are not published.</p>${src('ram','abu26','log')}`],
+'f-sat':['Input','Satellite data',`<h4>Essential</h4><ul><li><b>NISAR L-band GCOV.</b> HH and HV backscatter, plus polarimetric terms where quad-pol exists. Dual-pol HH/HV is the background-land default; the mode over the sites must be confirmed. Entropy and alpha are used only if quad-pol data exist.</li><li><b>NISAR SME2.</b> Soil moisture at 200 m from GCOV time series, three algorithms.</li><li><b>Sentinel-1 C-band.</b> VV and VH, for comparison with the 2026 Abu Dhabi results.</li></ul><h4>Desired</h4><ul><li>Sentinel-2 L2A, B2 to B8A plus SWIR B11 and B12: salinity indices, NDVI, CRSI, multi-year vigour.</li><li>Landsat 8/9 TIRS land surface temperature and its seasonal amplitude; actual evapotranspiration.</li><li>30 m DEM derivatives, depth to groundwater, distance to the TWW network.</li></ul>${src('nasa','asfd')}`],
+'f-field':['Input','Field and laboratory',`<p>Field campaigns are timed to NISAR overpasses.</p><ul><li>Soil cores at 0-30, 30-60 and 60-100 cm: ECe, SAR, pH, major ions (Na, Ca, Mg, K, Cl, HCO3, SO4), particle size, gravimetric moisture, bulk density.</li><li>EM38 apparent conductivity transects across each field.</li><li>In-situ dielectric probes at 5 and 30 cm at overpass; surface roughness profiles on the RT subset farms.</li><li>Farm-gate water EC, SAR and major ions each campaign; crop, canopy height and irrigation method.</li></ul><h4>Laboratory permittivity</h4><p>Soil packed to field bulk density and wetted with solutions of known salinity, measured at about 1.2 GHz with a vector network analyser and open-ended coaxial probe. The grid runs from below 0.05 cm³/cm³ (the dry case in Gao et al.) to near saturation, across salinities and textures.</p>`],
+'f-agency':['Input','Agency data',`<ul><li>EAD Soil Salinity Survey 2016 to 2018 point data: the pre-switch baseline.</li><li>Soil Survey of Abu Dhabi Emirate (2006 to 2009): texture and soil-family covariates.</li><li>ADAFSA per-farm switch dates and TAQA farm-gate water quality: the treatment record.</li><li>EAD groundwater well inventory and baseline study for pre-switch water quality.</li></ul><p>The full shortlist, with priorities, is in chapter 06.</p>`],
+'f-pre':['Processing','Preprocessing',`<p>Terrain flattening, multi-temporal speckle filtering and incidence-angle normalisation for NISAR. Coherence from GUNW interferograms flags tillage and irrigation events. Optical and thermal layers become salinity indices, vegetation indices and land surface temperature amplitude.</p>`],
+'f-tex':['Processing','Texture mapping',`<p>Grain size sets the dielectric response through sand and clay fractions, and controls leaching and moisture retention: coarse sands leach and dry quickly, while finer soils hold water and salt longer.</p><p>Texture is mapped by digital soil mapping, with core particle-size data as the target and SWIR clay absorption, thermal amplitude, terrain and the legacy soil survey as covariates. A subset of 15 to 20 farms spanning sand to loam gets full RT parameterisation.</p>`],
+'f-treat':['Processing','Treatment record',`<p>For each farm: the date it switched to treated wastewater and the EC and SAR of the water at the farm gate. It feeds the hybrid model as a covariate and defines treatment timing for the attribution step.</p>`],
+'f-diel':['Physics core','Dielectric model',`<p>Refit the dielectric model to the lab data. The starting point is a texture-dependent mixing model (Dobson et al., 1985) with the free-water term replaced by a saline-water permittivity (Stogryn, 1971).</p><p>Moisture mainly raises the real part of permittivity; dissolved salt mainly raises the imaginary part. Gao et al. found that models built for wet soils underpredicted the salinity signal in very dry soil, which is why the refit comes first.</p>${src('gao')}`],
+'f-rt':['Physics core','Two-layer radiative-transfer model',`<p>Test whether surface scattering alone explains NISAR backscatter, or whether subsurface and volume terms are needed. Dry sand is partly transparent at L-band, and the opposite C- and L-band polarimetric trends in Gao et al. are consistent with depth effects. This is a hypothesis to test.</p><div class="eq">σ⁰<sub>pq</sub> = σ⁰<sub>surf</sub> + τ²<sub>top</sub> · σ⁰<sub>sub</sub> + σ⁰<sub>vol</sub></div><ul><li><b>σ⁰ surf:</b> AIEM at the air-soil boundary; controlled by top-layer permittivity and roughness.</li><li><b>τ² top:</b> two-way attenuation through the dry upper layer; controlled by imaginary permittivity (salinity) and layer thickness.</li><li><b>σ⁰ sub:</b> AIEM at the moist, saline wetting or leaching front; controlled by permittivity contrast and front depth.</li><li><b>σ⁰ vol:</b> first-order term for inclusions such as gravel, gypsum and roots.</li><li><b>Canopy:</b> Water Cloud Model over date palm and fodder.</li></ul><p>The model runs over a look-up table of moisture, salinity, texture, roughness, front depth and incidence angle, with and without the extra terms. The simpler model stays unless the extra terms clearly improve the fit.</p>${src('chen','att','gao')}`],
+'f-emu':['Physics core','Emulator',`<p>A neural network trained on the look-up table reproduces the forward model quickly, so the inversion can run on every pixel and every 12-day date.</p>`],
+'f-inv':['Retrieval','Joint inversion',`<p>For each pixel and date, the inversion returns real and imaginary permittivity, moisture and subsurface front depth. These become the physics features for the hybrid model.</p>`],
+'f-sm':['Retrieval','Refined soil moisture',`<p>Standard retrievals assume non-saline soil, so a high imaginary permittivity can be read as extra moisture. The refinement takes SME2 as a prior and inverts jointly for moisture and salinity, constrained by texture. Field probes and gravimetric samples validate it, and the bias of uncorrected retrievals in saline soil is measured.</p>`],
+'f-hyb':['Model','Hybrid physics and machine-learning model',`<ol><li>Physics features join optical, thermal, terrain, water-source and crop covariates in a quantile regression forest, or gradient boosting with monotonic constraints, for ECe and moisture at each depth.</li><li>Predictions the RT model cannot produce are rejected.</li><li>Benchmark: the same model without physics features measures what the RT component adds.</li><li>Validation: farm-wise or spatial-block cross-validation; R², RMSE, MAE, bias, RPIQ and interval coverage; final test on farms not used in training.</li></ol>`],
+'f-maps':['Output','Seasonal maps',`<p>Seasonal maps of ECe at 0-30, 30-60 and 60-100 cm and soil moisture maps from 2026 onward, with per-pixel uncertainty, plus optical-only back-casts for Al Nahda's history.</p>`],
+'f-ew':['Output','Early-warning layer',`<p>Two flags per farm and season:</p><ul><li>Root-zone ECe above the threshold of the crop grown, for example 4.0 dS/m for date palm.</li><li>Leaching hotspots: salinity rising at 60-100 cm while falling at the surface, a sign of salt moving towards the aquifer.</li></ul><p>Designed with ADAFSA and EAD as a monitoring tool for the 2022 recycled-water standard.</p>`],
+'f-att':['Output (designs A and C)','Attribution',`<p>Farm-level salinity trajectories are compared before and after each farm's switch, against matched groundwater controls. Because farms switch at different times, a staggered-adoption difference-in-differences estimator is used, with event-study plots by year since the switch. Covariates include rain events, crop type, irrigation method and farm-gate water quality. Vigour (NDVI) and evapotranspiration are secondary outcomes.</p>${src('cal')}`],
+'o-data':['SO1 outcome','An open, time-stacked dataset',`<p>ECe, SAR, ions, texture, moisture and farm-gate water quality, co-located with NISAR overpasses. Used by researchers and EAD.</p>`],
+'o-perm':['SO2 outcome','First L-band permittivity of Gulf farm soils',`<p>Measurements across moisture, salinity and texture, with a dielectric model refitted to them. Used by the remote sensing community and NISAR users.</p>`],
+'o-scat':['SO2 outcome','Subsurface scattering, tested',`<p>A tested answer to whether subsurface and volume scattering matter for salinity retrieval in hyper-arid sandy soil.</p>`],
+'o-sm':['SO2 outcome','Salinity-corrected soil moisture',`<p>A refined NISAR soil moisture product for the study farms, with the measured bias of standard retrievals in saline soil. Used by NISAR cal/val and irrigation planners.</p>`],
+'o-maps':['SO3 outcome','Seasonal maps and method gain',`<p>Seasonal ECe maps at 0-30, 30-60 and 60-100 cm and soil moisture maps with per-pixel uncertainty, used by ADAFSA, EAD and farmers. A measured comparison of hybrid physics plus ML against ML alone.</p>`],
+'o-att':['SO4 outcome','Attribution, early warning and trust',`<p>The first causal estimate of how soil salinity changes after the switch, by years since switch, texture and water quality (designs A and C). A farm-level layer flagging crop-threshold exceedance and leaching hotspots. Farm-specific evidence reports and an updated survey of farmer views on recycled water.</p>`],
+'bp-wss':['UAE Water Security Strategy 2036','Reuse at 95%',`<p>Launched in September 2017, the strategy aims to cut total water demand by 21% and raise reuse of treated water to 95%.</p><p><b>This project contributes</b> evidence on whether farm reuse is safe for soils, which reuse needs before it can scale.</p>${src('wss','ali26')}`],
+'bp-rwp':['Abu Dhabi Recycled Water Policy','100% by 2030',`<p>The Department of Energy's 2019 policy raises recycled-water use to 100% by 2030.</p><p><b>This project contributes</b> soil outcomes for each new farm connection, and a basis for choosing the next farms to connect.</p>${src('doe')}`],
+'bp-std':['ADAFSA standard (2022)','Close monitoring',`<p>The first UAE agricultural recycled-water standard allows unrestricted irrigation of all crops, under close monitoring.</p><p><b>This project contributes</b> a monitoring tool that covers every farm, with an early-warning layer built with ADAFSA and EAD.</p>${src('ali25')}`],
+'bp-food':['National Food Security Strategy 2051','Sustainable local production',`<p>The strategy targets sustainable local production and practices that raise productivity and maintain ecosystems. Around 8,000 of the emirate's 24,394 farms are abandoned or nearly so.</p><p><b>This project contributes</b> protection of productive farmland and evidence for recovering degraded farms.</p>${src('fss','icba')}`],
+'bp-sdg6':['SDG 6.3','Safe water reuse',`<p>Measured soil outcomes of treated-wastewater reuse in agriculture, at farm and emirate scale.</p>`],
+'bp-sdg15':['SDG 15.3','Land degradation neutrality',`<p>Repeated salinity maps track whether degraded and abandoned farmland is recovering under the new water supply.</p>`]
+};
+
+/* ---------- literature ---------- */
+const LIT=[
+ [1,'Scudiero et al.',2016,'USA (California)','Landsat 7 canopy; EM38','Crop-response regression','0-1 m root zone','Perspective','optical','Set out two routes: bare-soil reflectance, or root-zone salinity from crop response. Multi-year Landsat 7 canopy reflectance in the western San Joaquin Valley, calibrated with EM38 and cores. Salt in irrigated land collects in the lower root zone, where surface reflectance cannot see it.','10.3389/fenvs.2016.00065'],
+ [2,'Bannari et al.',2018,'Arid Gulf site','Lab spectra to Sentinel-2','Band sensitivity','Topsoil','SWIR significant','optical gulf','An Arabian Gulf University team convolved lab spectra to Sentinel-2 bands. VNIR confused salt with soil colour and brightness; SWIR separated salinity classes significantly.','10.3390/rs10060855'],
+ [3,'Peng et al.',2019,'China (Xinjiang)','Landsat 8; terrain','Cubist, PLSR','Topsoil','R² 0.91','optical','225 samples with vegetation and salinity indices and terrain. Cubist R² = 0.91 (RMSE 5.18 dS/m) against 0.66 for PLSR; sub-regional models improved predictions.','10.1016/j.geoderma.2018.08.006'],
+ [4,'Abuelgasim & Ammad',2019,'UAE','Landsat 8','NIR-SWIR index','Topsoil','OA ~60%','optical gulf','A NIR-SWIR salinity index for UAE desert surfaces in a semi-empirical model. Overall accuracy about 60%, rising to 90% for excessively high saline soils. Targets desert and sabkha, not farms.','10.1016/j.rsase.2018.12.010'],
+ [5,'Hoa et al.',2019,'Vietnam','Sentinel-1 C-band','GP, SVR, RF, MLP','Topsoil','r 0.808','cband','63 samples in the Mekong Delta with five ML models; Gaussian Process best (r = 0.808, RMSE 2.885 dS/m). SAR was chosen because cloud ruled out optical data.','10.3390/rs11020128'],
+ [6,'Ivushkin et al.',2019,'Global','Thermal IR; soil maps','Random forest','Topsoil','67-70%','optical','Global salinity maps for several years between 1986 and 2016 from soil-property maps, thermal imagery and WoSIS points. Trends, but far too coarse for farms.','10.1016/j.rse.2019.111260'],
+ [7,'Wang J. et al.',2020,'China (Ebinur)','Sentinel-2, Landsat 8','Cubist','Topsoil','R² 0.912','optical','64 topsoil samples; Cubist with MSI and wetness gave R² = 0.912. Surface moisture correlated with salinity, so the two signals were entangled.','10.1016/j.scitotenv.2019.136092'],
+ [8,'Wang N. et al.',2020,'China (Xinjiang)','Landsat 8; C-band; terrain','RF, SVM, CNN, PLSR','Topsoil','R² 0.75','optical cband','151 samples with 35 covariates; random forest best (R² = 0.75). Optical, radar and terrain together beat any single source.','10.3390/rs12244118'],
+ [9,'Hassani et al.',2020,'Global','Climate, terrain, soil, RS','4-D ML (ECe, ESP)','Topsoil, several','1 km maps','optical','About 240,000 measurements from 1980 to 2018; 40 years of salinity and sodicity at 1 km; 11.73 million km² salt-affected.','10.1073/pnas.2013771117'],
+ [10,'Periasamy & Ravi',2020,'India','Sentinel-1 C-band','Dielectric model','Topsoil','vs in-situ EC','cband physics','A semi-empirical dielectric model on Sentinel-1 quantified soil EC from the imaginary part of permittivity: the clearest demonstration that a dielectric route can retrieve salinity from SAR.','10.1016/j.rse.2020.112059'],
+ [11,'Gao et al.',2021,'China (Qinghai)','GF-3 C, ALOS-2 L quad-pol','Dielectric + IEM test','Topsoil','R² 0.79','lband cband physics','70 samples where moisture was below 0.05 cm³/cm³. Models predicted a weak salinity effect; measured backscatter varied far more. Imaginary permittivity rose more at L-band (0.29 to 3.65) than C-band (0.27 to 2.23). Regression R² = 0.79, no independent validation.','10.3390/rs13030417'],
+ [12,'Al-Ali et al.',2021,'Kuwait','Landsat 8; lab spectra','Eight models','Topsoil','R² 0.97 (SWIR)','optical gulf','100 topsoil samples in six classes. Only the SWIR-based model performed well; VNIR and vegetation-index models reached R² of 0.41 or less.','10.3390/rs13030494'],
+ [13,'Alqasemi et al.',2021,'UAE (Abu Dhabi)','Landsat 8; LST','Index regression','Topsoil','Not in abstract','optical gulf','About 31% moderately and 46% highly saline; weak correlation with night-time LST. The closest Abu Dhabi analogue, optical and single-date.','10.1515/geo-2020-0244'],
+ [14,'Ravi & Periasamy',2021,'India','Multi-temporal Sentinel-1','Dielectric, seasonal','Topsoil','R² 0.89','cband physics','Dry- and wet-season data separated irrigation-induced from naturally upwelling salinity using imaginary permittivity. Close in concept to separating groundwater and TWW effects.','10.1016/j.scitotenv.2021.148148'],
+ [15,'Aksoy et al.',2022,'Iran (Urmia)','Sentinel-2A, Landsat 8','CART, RF, SVR (GEE)','Topsoil','R² 0.98','optical','CART scored highest, yet random forest produced the most realistic maps, so R² alone did not identify the most reliable map.','10.1016/j.asr.2021.10.024'],
+ [16,'Muhetaer et al.',2022,'China (Keriya)','PALSAR-2 L quad-pol','Polarimetric feature space','0-10 cm','R² 0.61-0.63','lband','25 polarimetric features from eight decompositions; three feature-space models. L-band polarimetry alone carries a salinity signal, at modest accuracy.','10.3390/rs14020363'],
+ [17,'Wei et al.',2022,'China (Keriya)','PALSAR-2; Landsat 8; ET; DEM','PSO-SVR','0-20 cm','PSO-SVR best','lband optical','65 samples with radar, optical, ET, groundwater depth and DEM. Groundwater depth and ET are covariates Al Ain can supply.','10.3390/rs14030512'],
+ [18,'Periasamy et al.',2022,'India','Sentinel-1 VV+VH','Dielectric EC + SVM','Topsoil','EC R² 0.79','cband physics','Dielectric-loss EC fed a 3-D classification schema with SVM. The closest precedent for the hybrid proposed here.','10.1016/j.rse.2022.113144'],
+ [19,'Zhao et al.',2023,'China (Keriya)','PALSAR-2; Landsat 8','SVM, RF','Topsoil','OA 91.6%','lband optical','Eleven decompositions plus optical; SVM 91.57% overall accuracy. L-band plus optical beat either alone.','10.3390/su15097452'],
+ [20,'Zhang H. et al.',2023,'China (Yellow River)','Landsat 9','RF, SVM, BPNN','0-60 cm, 4 layers','R² 0.71 → 0.53','optical','Four depths at 89 sites; R² fell from 0.707 at the surface to 0.534 at 40-60 cm.','10.3390/rs15245640']
+];
+const FILTERS=[['all','All 20'],['optical','Optical'],['cband','C-band SAR'],['lband','L-band SAR'],['physics','Dielectric physics'],['gulf','Gulf and UAE']];
+const litGrid=document.getElementById('litGrid');
+LIT.forEach(s=>{
+  const b=document.createElement('button');
+  b.className='card study';b.dataset.k=s[8];b.dataset.d='lit'+s[0];
+  b.innerHTML=`<span class="row"><span>#${s[0]} · ${s[2]}</span><span>${s[3]}</span></span><span class="t">${s[1]}</span><span class="s">${s[4]}</span><span class="acc">${s[7]}</span>`;
+  litGrid.appendChild(b);
+  D['lit'+s[0]]=[`Study ${s[0]} · ${s[2]}`,s[1],`<p>${s[9]}</p><ul><li><b>Region:</b> ${s[3]}</li><li><b>Data:</b> ${s[4]}</li><li><b>Method:</b> ${s[5]}</li><li><b>Depth:</b> ${s[6]}</li><li><b>Best reported:</b> ${s[7]}</li></ul><div class="src">Source: <a href="https://doi.org/${s[10]}" target="_blank" rel="noopener">doi:${s[10]}</a></div>`];
+});
+const chips=document.getElementById('litChips');
+FILTERS.forEach((f,i)=>{const c=document.createElement('button');c.className='chip';c.textContent=f[1];c.setAttribute('aria-pressed',i===0);c.onclick=()=>{chips.querySelectorAll('.chip').forEach(x=>x.setAttribute('aria-pressed','false'));c.setAttribute('aria-pressed','true');litGrid.querySelectorAll('.study').forEach(st=>st.classList.toggle('hidden',f[0]!=='all'&&!st.dataset.k.split(' ').includes(f[0])));};chips.appendChild(c);});
+
+/* ---------- design options ---------- */
+const OPT={
+ A:[['Main question','Is the switch to TWW changing soil salinity, and where?'],['Sites','Al Nahda (143 farms on recycled water since 2012); Al Khatam and Al Khaznah farms in the 2024 ADAFSA rollout; matched groundwater controls'],['What is known','Switch dates and water quality are held by ADAFSA and TAQA, not published'],['Indicative size','60-100 farms, about half switched, sampled every six months'],['Strengths','Answers the policy question; uses the staggered rollout as a natural experiment'],['Depends on','Per-farm switch dates and farm-gate water quality'],['Main risk','Without switch dates, attribution weakens to mapping change']],
+ B:[['Main question','Can measured permittivity and RT physics explain the L-band salinity signal in Al Ain soils?'],['Sites','Al Foah, north of Al Ain, on farms irrigated with water of different salinity'],['What is known','48 production wells sampled by UAEU researchers: about 82% brackish, 18% fresh (Suleiman et al., 2010). Farm-level soil data not confirmed'],['Indicative size','Pilot of 5-8 farms and 30-50 sampling locations, repeated at NISAR overpasses'],['Strengths','Clean contrast in irrigation salinity without TWW chemistry; isolates the physics; smaller and faster'],['Depends on','Farm access and records of current irrigation sources'],['Main risk','Does not answer the TWW question alone']],
+ C:[['Main question','Both, in that order'],['Sites','Al Foah in phase 1; Al Nahda and rollout farms in phase 2'],['What is known','As for A and B'],['Indicative size','Pilot first, then scale up'],['Strengths','Physics is calibrated before it is used for attribution'],['Depends on','Both; phase 2 data requests can run during phase 1'],['Main risk','Longer timeline. Phases are pooled only if soils, irrigation histories and protocols prove comparable']]
+};
+const optPanel=document.getElementById('optPanel');
+function showOpt(k){optPanel.innerHTML='<dl>'+OPT[k].map(r=>`<dt>${r[0]}</dt><dd>${r[1]}</dd>`).join('')+'</dl>';document.querySelectorAll('#optTabs .tab').forEach(t=>t.setAttribute('aria-selected',t.dataset.o===k));}
+document.querySelectorAll('#optTabs .tab').forEach(t=>t.onclick=()=>showOpt(t.dataset.o));showOpt('A');
+
+/* ---------- tables ---------- */
+function table(id,head,rows,clickKeys){
+  const t=document.getElementById(id);
+  t.innerHTML='<thead><tr>'+head.map(h=>`<th>${h}</th>`).join('')+'</tr></thead><tbody>'+rows.map((r,i)=>`<tr${clickKeys&&clickKeys[i]?` class="click" data-d="${clickKeys[i]}" tabindex="0"`:''}>`+r.map(c=>`<td>${c}</td>`).join('')+'</tr>').join('')+'</tbody>';
+}
+const ess='<span class="pill p1">Essential</span>',des='<span class="pill p3">Desired</span>';
+table('satTbl',['Dataset','Specifications','Use','Tier'],[
+ ['NISAR L-band GCOV (L2)','24 cm; 12-day repeat; 3-10 m by mode; dual-pol HH/HV default','Main radar input to the RT inversion',ess],
+ ['NISAR SME2 soil moisture (L3)','200 m; three algorithms','Prior for the salinity-corrected moisture product',ess],
+ ['NISAR GUNW interferograms (L2)','Repeat-pass coherence','Tillage and irrigation events',ess],
+ ['Sentinel-1 C-band','VV and VH','Cross-frequency comparison',ess],
+ ['Sentinel-2 MSI L2A','10-20 m; VNIR and SWIR','Salinity and vegetation indices; texture covariates',des],
+ ['Landsat 8/9 OLI and TIRS','30 m optical; 100 m thermal; pre-2012 archive','Al Nahda history; land surface temperature',des],
+ ['ALOS-2 PALSAR-2 archive','L-band, before NISAR','Pre-switch L-band baseline (subject to JAXA terms)',des],
+ ['Copernicus DEM','30 m','Terrain; incidence-angle correction',des]]);
+table('groundTbl',['Data','Design','Frequency'],[
+ ['Soil cores: ECe, SAR, pH, ions, texture, moisture, bulk density','Chosen farms, three depths','Every six months, at NISAR overpass'],
+ ['EM38 apparent conductivity','Transects across each farm','Every six months'],
+ ['Lab permittivity at about 1.2 GHz','Each texture class, over a moisture and salinity grid','Once, early in the project'],
+ ['In-situ dielectric probes and roughness','15-20 RT subset farms','Each campaign'],
+ ['Farm-gate water: EC, SAR, major ions','Every sampled farm','Each campaign'],
+ ['Farm survey, including views on recycled water','Every sampled farm','Start and end of project']]);
+const P=n=>`<span class="pill ${n.startsWith('1')?'p1':n.startsWith('2')?'p2':'p3'}">P${n}</span>`;
+const REQ=[
+ ['1','Soil Salinity Survey 2016-2018, point data','EAD','Pre-switch baseline; training data','4,000 farms; 15,020 field soil and 3,585 water measurements; 4,000 lab analyses; maps at three depths.','insas'],
+ ['1','Source, date and points behind AD-SDI layers 180 and 181','EAD','Whether the layers can be more than a site-selection guide','505 shallow and 7 generalized deep polygons, survey date unavailable, incomplete coverage. QGIS check found static attributes.','ram'],
+ ['1 (A, C)','Per-farm recycled-water connection list and dates','ADAFSA','Treatment and timing for attribution','1,600+ farms in Al Khatam, Al Khaznah and Al Nahda; 143 Al Nahda farms since 2012.','wam24'],
+ ['1 (A, C)','Recycled-water quality at plants, tanks and farms (EC, SAR)','TAQA; ADAFSA','The treatment variable','ADAFSA samples farms and storage tanks and tests them with the Central Testing Laboratory.','ali25'],
+ ['1 (B, C)','Irrigation source and water quality for Al Foah farms','ADAFSA; farm owners','Defines the calibration contrast','Not published.',null],
+ ['2','Monitoring farms (100) and soil sites (664)','EAD','Time series for validation','664 sites and 1,376 samples a year.','gn25'],
+ ['2','Groundwater Quality Baseline Study 2017-2018','EAD (published)','Pre-switch water quality','145 wells sampled January to April 2018 for pH, EC, major ions, with SAR computed. Coverage of study farms to check.','bat'],
+ ['2','Groundwater Well Inventory and Atlas','EAD','Pre-switch well EC; depth to groundwater','118,183 wells, 73,184 in Al Ain; over 440 monitored wells.','atlas'],
+ ['2 (B, C)','Al Foah well chemistry: 48 wells','UAEU authors','Baseline for design B','About 82% brackish and 18% fresh; raw values and coordinates not in the abstract.','sul'],
+ ['2 (B, C)','Locations of the 14 oasis farms','UAEU Biology','Second irrigation contrast','Coordinates not published.','log'],
+ ['2','Soil Survey of Abu Dhabi Emirate (2006-2009)','EAD (with ICBA)','Texture and soil-family covariates','Emirate at 1:100,000; 400,000 ha of irrigable land at 1:25,000.','icbas'],
+ ['2','Farm and forest inventory with boundaries','EAD; ADAFSA','Farm polygons','About 24,000 farms, linked to the well inventory.','dorn'],
+ ['3','Groundwater contour layer, 2016-2017','AD-SDI (open)','Depth-to-groundwater covariate','Public map service.','sdi'],
+ ['3','Weather station records','NCM','Rain and ET covariates','More than 100 surface stations.','ktn'],
+ ['3','Recycled-water delivery volumes by area','TAQA Distribution; DoE','Water dose per farm','Not published at farm level.',null],
+ ['3','Salinity survey of 181 farms, 2013-2014','ICBA','Earlier baseline for Al Nahda','Funded by ADFCA.','icb2'],
+ ['3','Environmental Data Platform','EAD','Possible access route','Launched Oct 2025; soil and groundwater modules planned for phase two in 2026.','edp']];
+REQ.forEach((r,i)=>{D['req'+i]=[`Priority ${r[0]} · ${r[2]}`,r[1],`<p>${r[4]}</p><p><b>Why we need it:</b> ${r[3]}.</p>${r[5]?src(r[5]):''}`];});
+table('reqTbl',['Priority','Dataset','Holder','Why we need it'],REQ.map(r=>[P(r[0]),r[1],r[2],r[3]]),REQ.map((r,i)=>'req'+i));
+table('pubTbl',['#','Paper','Design'],[
+ ['1','L-band permittivity of saline Gulf farm soils and a refitted dielectric model','All'],
+ ['2','L-band RT modelling of saline sandy soils with and without subsurface scattering, tested on NISAR','All'],
+ ['3','A salinity-corrected NISAR soil moisture retrieval for hyper-arid irrigated land','All'],
+ ['4','Soil salinity after more than a decade of recycled water in Al Nahda','A, C'],
+ ['5','Staggered difference-in-differences attribution of soil change to TWW irrigation','A, C']]);
+table('riskTbl',['Risk','Effect','Fallback'],[
+ ['Per-farm switch dates not released','Attribution weakens','Area-level rollout dates and the Al Nahda contrast, or design B first'],
+ ['EAD salinity layers remain undated','No mapped baseline','Use the 2016-2018 survey points if released; otherwise the first campaign is the baseline'],
+ ['NISAR mode over the sites is single-pol or sparse','Fewer radar features','HH time series and SME2; ALOS-2 archive if accessible'],
+ ['No local lab for 1.2 GHz permittivity','Dielectric refit delayed','Partner lab, or in-situ probes over a narrower moisture range'],
+ ['RT model does not close for some soils','Physics features unreliable there','Flag those soils, fall back to ML with optical and EM38 covariates, and report the limit']]);
+table('benTbl',['Group','Benefit'],[
+ ['Researchers','A tested physical link between L-band radar, soil texture and salinity in hyper-arid soils, and an open dataset of switched and unswitched farms'],
+ ['Farmers','Field-level salinity status, leaching and crop advice, and independent evidence on what recycled water does to their soil'],
+ ['ADAFSA, EAD, DoE','Monitoring that meets the 2022 standard, evidence for the 100% reuse target, and a basis for choosing the next farm connections'],
+ ['TAQA and distribution companies','Feedback on how farm-gate water quality turns into soil outcomes'],
+ ['Federal level (MOCCAE, MOEI)','Measured progress on the Water Security Strategy 2036, the Food Security Strategy 2051 and SDG 15.3']]);
+table('decTbl',['#','Decision','Options'],[
+ ['1','Study design and sites','A: TWW attribution on Al Nahda and the 2024 rollout farms against groundwater controls. B: physics calibration on Al Foah farms. C: B as phase 1, then A'],
+ ['2','Depth of the physics','Refit dielectric model only; add surface scattering (IEM); full two-layer model with subsurface and volume terms'],
+ ['3','Route to agency data','Dr Hamouda\'s contacts; formal UAEU request to EAD, ADAFSA and TAQA; joint work with agency staff'],
+ ['4','Laboratory for 1.2 GHz permittivity','UAEU facility, or a partner lab'],
+ ['5','Funding route and duration','Open']]);
+table('confTbl',['#','Item'],[
+ ['1','NISAR acquisition mode (single, dual or quad-pol) over Al Nahda, Al Khatam, Al Khaznah and Al Foah'],
+ ['2','NISAR product status: provisional products confirmed from 17 June 2026; a later validated release reported but not yet confirmed'],
+ ['3','Which survey the AD-SDI salinity layers come from, its dates, and whether EAD will share the point data'],
+ ['4','Which rollout figures are current: EAD\'s 4,015 farms or ADAFSA\'s 1,600+ farms'],
+ ['5','Farm-gate EC and SAR of treated water in Al Ain'],
+ ['6','Whether the 14 oasis farms in Loganathachetti et al. (2022) lie in Al Foah'],
+ ['7','A lab able to measure complex permittivity at about 1.2 GHz'],
+ ['8','Scopus indexing of each study in the literature review'],
+ ['9','Funding scheme, budget ceiling and duration']]);
+
+/* ---------- drawer ---------- */
+const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim');let lastFocus=null;
+function openD(key){const d=D[key];if(!d)return;lastFocus=document.activeElement;document.getElementById('dKick').textContent=d[0];document.getElementById('dTitle').textContent=d[1];document.getElementById('dBody').innerHTML=d[2];drawer.classList.add('on');scrim.classList.add('on');document.getElementById('dClose').focus();}
+function closeD(){drawer.classList.remove('on');scrim.classList.remove('on');if(lastFocus)lastFocus.focus();}
+document.addEventListener('click',e=>{const el=e.target.closest('[data-d]');if(el&&!drawer.contains(el))openD(el.dataset.d);});
+document.addEventListener('keydown',e=>{if(e.key==='Enter'){const el=e.target.closest&&e.target.closest('tr[data-d]');if(el)openD(el.dataset.d);}});
+scrim.onclick=closeD;document.getElementById('dClose').onclick=closeD;
+
+/* ---------- SO to gap highlight ---------- */
+const gapCards=[...document.querySelectorAll('.gap')];
+document.querySelectorAll('.so').forEach(s=>{
+  const on=()=>{const g=s.dataset.gaps.split(' ');gapCards.forEach(c=>{c.classList.toggle('glow',g.includes(c.dataset.g));c.classList.toggle('dim',!g.includes(c.dataset.g));});};
+  const off=()=>gapCards.forEach(c=>c.classList.remove('glow','dim'));
+  s.addEventListener('mouseenter',on);s.addEventListener('mouseleave',off);s.addEventListener('focus',on);s.addEventListener('blur',off);
+});
+
+/* ---------- chapters ---------- */
+const chs=[...document.querySelectorAll('section.ch')];const nav=document.getElementById('nav');const journey=document.getElementById('journey');
+const JDESC={need:'Soils already past crop limits',problem:'Water changing faster than monitoring',aims:'Seven gaps, one objective',literature:'What twenty studies did and missed',approach:'Physics first, ML second',data:'What exists and what to request',outcomes:'What the project delivers',['big-picture']:'Links to national goals',discussion:'Decisions to settle today'};
+chs.forEach((c,i)=>{
+  const b=document.createElement('button');b.type='button';b.innerHTML=`<span class="n">${String(i).padStart(2,'0')}</span>${c.dataset.label}`;b.onclick=()=>go(i);nav.appendChild(b);
+  if(i>0){const j=document.createElement('button');j.type='button';j.innerHTML=`<span class="num">${String(i).padStart(2,'0')}</span><span class="lbl">${c.dataset.label}<small>${JDESC[c.id]}</small></span><span class="arr">→</span>`;j.onclick=()=>go(i);journey.appendChild(j);}
+});
+let cur=0;
+function go(i,fromHash){
+  cur=Math.max(0,Math.min(chs.length-1,i));
+  chs.forEach((c,k)=>c.classList.toggle('on',k===cur));
+  [...nav.children].forEach((b,k)=>b.setAttribute('aria-current',k===cur));
+  nav.children[cur].scrollIntoView({block:'nearest',inline:'center'});
+  document.getElementById('prog').style.width=(cur/(chs.length-1)*100)+'%';
+  document.getElementById('pos').textContent=`${cur+1} / ${chs.length}`;
+  document.getElementById('prev').disabled=cur===0;
+  document.getElementById('next').disabled=cur===chs.length-1;
+  if(!fromHash&&location.hash!=='#'+chs[cur].id){try{history.replaceState(null,'','#'+chs[cur].id);}catch(e){location.hash=chs[cur].id;}}
+  window.scrollTo({top:0});
+  closeD();
+}
+document.getElementById('prev').onclick=()=>go(cur-1);
+document.getElementById('next').onclick=()=>go(cur+1);
+document.addEventListener('keydown',e=>{
+  if(e.target.closest&&e.target.closest('input,textarea'))return;
+  if(e.key==='Escape'){closeD();return;}
+  if(drawer.classList.contains('on'))return;
+  if(e.key==='ArrowRight'||e.key==='PageDown'){e.preventDefault();go(cur+1);}
+  if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+});
+function fromHash(){const id=location.hash.slice(1);const i=chs.findIndex(c=>c.id===id);go(i>=0?i:0,true);}
+window.addEventListener('hashchange',fromHash);fromHash();
+
+document.getElementById('fsBtn').onclick=async()=>{try{if(!document.fullscreenElement)await document.documentElement.requestFullscreen();else await document.exitFullscreen();}catch(e){document.getElementById('fsBtn').textContent='Full screen unavailable';}};
+</script>
+</body>
+</html>
