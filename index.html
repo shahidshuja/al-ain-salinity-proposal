@@ -427,7 +427,7 @@ aside.drawer.on{transform:none}
     </div>
     <div class="down" aria-hidden="true">▼</div>
     <div class="row one">
-      <button class="node" data-d="f-maps"><b>Seasonal salinity and moisture maps</b><span>ECe at 0-30, 30-60 and 60-100 cm, with uncertainty per pixel</span></button>
+      <button class="node" data-d="f-maps"><b>Seasonal salinity and moisture maps</b><span>ECe at 0-30 cm from radar physics and the model; 30-60 and 60-100 cm predicted, with accuracy reported per depth</span></button>
     </div>
     <div class="down" aria-hidden="true">▼</div>
     <div class="row two">
@@ -581,7 +581,7 @@ aside.drawer.on{transform:none}
     <button class="card" data-d="o-perm"><span class="tag">SO2</span><span class="t">First L-band permittivity of Gulf farm soils</span><span class="s">Across moisture, salinity and texture, with a dielectric model refitted to them.</span></button>
     <button class="card" data-d="o-scat"><span class="tag">SO2</span><span class="t">A tested answer on subsurface scattering</span><span class="s">Whether the extra terms matter for salinity retrieval in hyper-arid sandy soil.</span></button>
     <button class="card" data-d="o-sm"><span class="tag">SO2</span><span class="t">Salinity-corrected soil moisture</span><span class="s">A refined NISAR product for the study farms, with the measured bias of standard retrievals.</span></button>
-    <button class="card" data-d="o-maps"><span class="tag">SO3</span><span class="t">Seasonal maps at three depths</span><span class="s">ECe and moisture with per-pixel uncertainty, plus a measured gain over ML alone.</span></button>
+    <button class="card" data-d="o-maps"><span class="tag">SO3</span><span class="t">Seasonal maps at three depths</span><span class="s">Upper layer from radar physics and the model, deeper layers predicted, with accuracy per depth and a measured gain over ML alone.</span></button>
     <button class="card" data-d="o-att"><span class="tag">SO4</span><span class="t">The first causal estimate of the switch</span><span class="s">By years since switch, texture and water quality, with an early-warning layer for ADAFSA.</span></button>
   </div>
   <div class="subhead"><h3>Suggested publications</h3></div>
@@ -617,9 +617,13 @@ aside.drawer.on{transform:none}
 <!-- 09 DISCUSSION -->
 <section class="ch" id="discussion" data-label="Discussion">
   <p class="kicker">09 · For discussion today</p>
-  <h2>Five decisions and nine items to confirm</h2>
+  <h2>Six decisions and nine items to confirm</h2>
   <p class="lede">The proposal is deliberately open on design, depth of physics, data route, laboratory and funding. These are the choices to settle together.</p>
   <div class="tblwrap"><table class="tbl" id="decTbl"></table></div>
+  <div class="statement" style="border-left-color:var(--accent);margin-top:18px">
+    <p class="kicker">Depth note for decision 6</p>
+    <p>L-band radar sees the top few centimetres of moist soil (SMAP's moisture product covers the top 5 cm) and deeper only in very dry, loose sand. It cannot see 60-100 cm on an irrigated farm. Deeper layers are predicted from soil cores and EM38, which reads to about 1.5 m, and accuracy is expected to fall with depth.</p>
+  </div>
   <div class="subhead"><h3>Items to confirm before submission</h3></div>
   <div class="tblwrap"><table class="tbl" id="confTbl"></table></div>
 
@@ -703,6 +707,11 @@ const S={
  icb2:['ICBA brief (181 farms)','https://iiqp.biosaline.org/sites/default/files/Projectbrieffiles/Land_Reclamation-Project_Brief-Final-2.pdf'],
  fao48:['FAO, Rhoades et al., 1992','https://www.fao.org/4/t0667e/t0667e02.htm'],
  ucanr:['UC ANR salinity units','https://ucanr.edu/sites/Salinity/Salinity_Management/Salinity_Basics/Salinity_measurement_and_unit_conversions'],
+ smap:['ASF, SMAP mission','https://asf.alaska.edu/smap'],
+ sira:['McCauley et al., 1982','https://doi.org/10.1126/science.218.4576.1004'],
+ sira2:['McCauley, Breed and Schaber (NASA NTRS)','https://ntrs.nasa.gov/citations/19850015330'],
+ em38:['Geonics EM38-MK2','https://www.geonics.com/html/em38.html'],
+ zhang23:['Zhang H. et al., 2023','https://doi.org/10.3390/rs15245640'],
  edp:['WAM, Oct 2025','https://www.wam.ae/en/article/bmbenrg-ead-launches-environmental-data-platform']
 };
 const src=(...k)=>'<div class="src">Sources: '+k.map(x=>`<a href="${S[x][1]}" target="_blank" rel="noopener">${S[x][0]}</a>`).join('')+'</div>';
@@ -731,7 +740,7 @@ g6:['Gap G6','Attribution',`<p>No study links a farm's soil change to its switch
 g7:['Gap G7','Evidence for trust',`<p>Farmers have no independent, farm-specific evidence of what recycled water does to their soil.</p><p><b>Why it matters:</b> acceptance depends on communication.</p><p><b>Who needs it:</b> farmers, ADAFSA extension.</p>${src('chf')}`],
 so1:['SO1 · closes G1, G3, G4','Evidence base',`<p>Build a time-stacked ground dataset on the chosen farms: ECe, SAR, ionic composition, texture and moisture at three depths, plus farm-gate water EC and SAR. Campaigns are timed to NISAR overpasses so ground and radar see the same soil state.</p>`],
 so2:['SO2 · closes G2, G4, G5','Radar physics',`<p>Measure complex permittivity of the study soils at about 1.2 GHz across moisture, salinity and texture; refit the dielectric model; then simulate L-band surface, subsurface and volume scattering and test which terms the NISAR data need. Use the result to refine the NISAR soil moisture product over the study area.</p>`],
-so3:['SO3 · closes G1, G2, G3','Maps',`<p>Combine the physics outputs with NISAR, optical and terrain covariates in a hybrid model that produces seasonal, multi-depth ECe and soil moisture maps with uncertainty.</p>`],
+so3:['SO3 · closes G1, G2, G3','Maps',`<p>Combine the physics outputs with NISAR, optical and terrain covariates in a hybrid model that produces seasonal, multi-depth ECe and soil moisture maps with uncertainty. Radar informs the upper layer directly; deeper layers are predicted from the model and validated per depth.</p>`],
 so4:['SO4 · closes G1, G6, G7','Attribution and use',`<p>Under design A or C, estimate the effect of the switch with a before-after-control-impact (difference-in-differences) design across the staggered rollout. Turn the maps into a farm-level early-warning layer and farmer advisories with ADAFSA and EAD.</p>`],
 'open-depth':['Literature gap','Depth',`<p>17 of the 20 studies map topsoil only. The one multi-depth optical study (Zhang et al., 2023) saw validation R² fall from 0.707 at the surface to 0.534 at 40-60 cm, so optical covariates say less and less about salt below the surface.</p>`],
 'open-freq':['Literature gap','Frequency',`<p>The L-band studies (Gao 2021, Muhetaer 2022, Wei 2022, Zhao 2023) all use ALOS-2 PALSAR-2 snapshots. None uses a dense L-band time series of the kind NISAR now provides every 12 days.</p>`],
@@ -751,14 +760,14 @@ so4:['SO4 · closes G1, G6, G7','Attribution and use',`<p>Under design A or C, e
 'f-inv':['Retrieval','Joint inversion',`<p>For each pixel and date, the inversion returns real and imaginary permittivity, moisture and subsurface front depth. These become the physics features for the hybrid model.</p>`],
 'f-sm':['Retrieval','Refined soil moisture',`<p>Standard retrievals assume non-saline soil, so a high imaginary permittivity can be read as extra moisture. The refinement takes SME2 as a prior and inverts jointly for moisture and salinity, constrained by texture. Field probes and gravimetric samples validate it, and the bias of uncorrected retrievals in saline soil is measured.</p>`],
 'f-hyb':['Model','Hybrid physics and machine-learning model',`<ol><li>Physics features join optical, thermal, terrain, water-source and crop covariates in a quantile regression forest, or gradient boosting with monotonic constraints, for ECe and moisture at each depth.</li><li>Predictions the RT model cannot produce are rejected.</li><li>Benchmark: the same model without physics features measures what the RT component adds.</li><li>Validation: farm-wise or spatial-block cross-validation; R², RMSE, MAE, bias, RPIQ and interval coverage; final test on farms not used in training.</li></ol>`],
-'f-maps':['Output','Seasonal maps',`<p>Seasonal maps of ECe at 0-30, 30-60 and 60-100 cm and soil moisture maps from 2026 onward, with per-pixel uncertainty, plus optical-only back-casts for Al Nahda's history.</p>`],
+'f-maps':['Output','Seasonal maps',`<p>Seasonal maps of ECe at three depths and soil moisture maps from 2026 onward, with per-pixel uncertainty, plus optical-only back-casts for Al Nahda's history.</p><h4>What radar sees, and what is predicted</h4><p>L-band radar does not see a metre into farm soil. L-band moisture missions such as SMAP measure the top 5 cm. In extremely dry, loose sand it can reach much deeper: Shuttle Imaging Radar at 1.3 GHz saw through about a metre or two of dry cover in the eastern Sahara. Water and salt both shorten it, so on irrigated Al Ain farms radar sees the upper soil only.</p><ul><li><b>0-30 cm:</b> partly observed, through radar physics and the hybrid model.</li><li><b>30-60 and 60-100 cm:</b> predicted by the hybrid model, trained on soil cores and EM38, which reads soil conductivity to about 1.5 m in vertical dipole mode.</li></ul><p>Accuracy is expected to fall with depth, as in Zhang et al. (2023), where R² fell from 0.707 at the surface to 0.534 at 40-60 cm. It is reported separately for each depth.</p>${src('smap','sira','sira2','em38','zhang23')}`],
 'f-ew':['Output','Early-warning layer',`<p>Two flags per farm and season:</p><ul><li>Root-zone ECe above the threshold of the crop grown, for example 4.0 dS/m for date palm.</li><li>Leaching hotspots: salinity rising at 60-100 cm while falling at the surface, a sign of salt moving towards the aquifer.</li></ul><p>Designed with ADAFSA and EAD as a monitoring tool for the 2022 recycled-water standard.</p>`],
 'f-att':['Output (designs A and C)','Attribution',`<p>Farm-level salinity trajectories are compared before and after each farm's switch, against matched groundwater controls. Because farms switch at different times, a staggered-adoption difference-in-differences estimator is used, with event-study plots by year since the switch. Covariates include rain events, crop type, irrigation method and farm-gate water quality. Vigour (NDVI) and evapotranspiration are secondary outcomes.</p>${src('cal')}`],
 'o-data':['SO1 outcome','An open, time-stacked dataset',`<p>ECe, SAR, ions, texture, moisture and farm-gate water quality, co-located with NISAR overpasses. Used by researchers and EAD.</p>`],
 'o-perm':['SO2 outcome','First L-band permittivity of Gulf farm soils',`<p>Measurements across moisture, salinity and texture, with a dielectric model refitted to them. Used by the remote sensing community and NISAR users.</p>`],
 'o-scat':['SO2 outcome','Subsurface scattering, tested',`<p>A tested answer to whether subsurface and volume scattering matter for salinity retrieval in hyper-arid sandy soil.</p>`],
 'o-sm':['SO2 outcome','Salinity-corrected soil moisture',`<p>A refined NISAR soil moisture product for the study farms, with the measured bias of standard retrievals in saline soil. Used by NISAR cal/val and irrigation planners.</p>`],
-'o-maps':['SO3 outcome','Seasonal maps and method gain',`<p>Seasonal ECe maps at 0-30, 30-60 and 60-100 cm and soil moisture maps with per-pixel uncertainty, used by ADAFSA, EAD and farmers. A measured comparison of hybrid physics plus ML against ML alone.</p>`],
+'o-maps':['SO3 outcome','Seasonal maps and method gain',`<p>Seasonal ECe maps at 0-30, 30-60 and 60-100 cm and soil moisture maps with per-pixel uncertainty, used by ADAFSA, EAD and farmers. The 0-30 cm layer draws on radar physics; the deeper layers are model predictions trained on cores and EM38, with accuracy reported per depth. A measured comparison of hybrid physics plus ML against ML alone.</p>`],
 'o-att':['SO4 outcome','Attribution, early warning and trust',`<p>The first causal estimate of how soil salinity changes after the switch, by years since switch, texture and water quality (designs A and C). A farm-level layer flagging crop-threshold exceedance and leaching hotspots. Farm-specific evidence reports and an updated survey of farmer views on recycled water.</p>`],
 'bp-wss':['UAE Water Security Strategy 2036','Reuse at 95%',`<p>Launched in September 2017, the strategy aims to cut total water demand by 21% and raise reuse of treated water to 95%.</p><p><b>This project contributes</b> evidence on whether farm reuse is safe for soils, which reuse needs before it can scale.</p>${src('wss','ali26')}`],
 'bp-rwp':['Abu Dhabi Recycled Water Policy','100% by 2030',`<p>The Department of Energy's 2019 policy raises recycled-water use to 100% by 2030.</p><p><b>This project contributes</b> soil outcomes for each new farm connection, and a basis for choosing the next farms to connect.</p>${src('doe')}`],
@@ -879,7 +888,8 @@ table('decTbl',['#','Decision','Options'],[
  ['2','Depth of the physics','Refit dielectric model only; add surface scattering (IEM); full two-layer model with subsurface and volume terms'],
  ['3','Route to agency data','Existing contacts with the agencies; formal UAEU request to EAD, ADAFSA and TAQA; joint work with agency staff'],
  ['4','Laboratory for 1.2 GHz permittivity','UAEU facility, or a partner lab'],
- ['5','Funding route and duration','Open']]);
+ ['5','Funding route and duration','Open'],
+ ['6','How to produce the 60-100 cm layer','Keep it as a model prediction with wide uncertainty; or treat it mainly as an EM38 and field-core product, and use radar only for the upper layers']]);
 table('nextTbl',['#','Question'],[
  ['1','Should the prescriptions cover only salinity and water (leaching, timing, crop choice, drainage), or bring sodicity back so gypsum can be recommended?'],
  ['2','Should sources be gathered on asphalt barriers, gypsum use in UAE or Gulf soils, and ICBA\'s salt-tolerant crop work?'],
