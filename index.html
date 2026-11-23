@@ -617,13 +617,9 @@ aside.drawer.on{transform:none}
 <!-- 09 DISCUSSION -->
 <section class="ch" id="discussion" data-label="Discussion">
   <p class="kicker">09 · For discussion today</p>
-  <h2>Six decisions and nine items to confirm</h2>
+  <h2>Six decisions and eight items to confirm</h2>
   <p class="lede">The proposal is deliberately open on design, depth of physics, data route, laboratory and funding. These are the choices to settle together.</p>
   <div class="tblwrap"><table class="tbl" id="decTbl"></table></div>
-  <div class="statement" style="border-left-color:var(--accent);margin-top:18px">
-    <p class="kicker">Depth note for decision 6</p>
-    <p>L-band radar sees the top few centimetres of moist soil (SMAP's moisture product covers the top 5 cm) and deeper only in very dry, loose sand. It cannot see 60-100 cm on an irrigated farm. Deeper layers are predicted from soil cores and EM38, which reads to about 1.5 m, and accuracy is expected to fall with depth.</p>
-  </div>
   <div class="subhead"><h3>Items to confirm before submission</h3></div>
   <div class="tblwrap"><table class="tbl" id="confTbl"></table></div>
 
@@ -760,7 +756,7 @@ so4:['SO4 · closes G1, G6, G7','Attribution and use',`<p>Under design A or C, e
 'f-inv':['Retrieval','Joint inversion',`<p>For each pixel and date, the inversion returns real and imaginary permittivity, moisture and subsurface front depth. These become the physics features for the hybrid model.</p>`],
 'f-sm':['Retrieval','Refined soil moisture',`<p>Standard retrievals assume non-saline soil, so a high imaginary permittivity can be read as extra moisture. The refinement takes SME2 as a prior and inverts jointly for moisture and salinity, constrained by texture. Field probes and gravimetric samples validate it, and the bias of uncorrected retrievals in saline soil is measured.</p>`],
 'f-hyb':['Model','Hybrid physics and machine-learning model',`<ol><li>Physics features join optical, thermal, terrain, water-source and crop covariates in a quantile regression forest, or gradient boosting with monotonic constraints, for ECe and moisture at each depth.</li><li>Predictions the RT model cannot produce are rejected.</li><li>Benchmark: the same model without physics features measures what the RT component adds.</li><li>Validation: farm-wise or spatial-block cross-validation; R², RMSE, MAE, bias, RPIQ and interval coverage; final test on farms not used in training.</li></ol>`],
-'f-maps':['Output','Seasonal maps',`<p>Seasonal maps of ECe at three depths and soil moisture maps from 2026 onward, with per-pixel uncertainty, plus optical-only back-casts for Al Nahda's history.</p><h4>What radar sees, and what is predicted</h4><p>L-band radar does not see a metre into farm soil. L-band moisture missions such as SMAP measure the top 5 cm. In extremely dry, loose sand it can reach much deeper: Shuttle Imaging Radar at 1.3 GHz saw through about a metre or two of dry cover in the eastern Sahara. Water and salt both shorten it, so on irrigated Al Ain farms radar sees the upper soil only.</p><ul><li><b>0-30 cm:</b> partly observed, through radar physics and the hybrid model.</li><li><b>30-60 and 60-100 cm:</b> predicted by the hybrid model, trained on soil cores and EM38, which reads soil conductivity to about 1.5 m in vertical dipole mode.</li></ul><p>Accuracy is expected to fall with depth, as in Zhang et al. (2023), where R² fell from 0.707 at the surface to 0.534 at 40-60 cm. It is reported separately for each depth.</p>${src('smap','sira','sira2','em38','zhang23')}`],
+'f-maps':['Output','Seasonal maps',`<p>Seasonal maps of ECe at three depths and soil moisture maps from 2026 onward, with per-pixel uncertainty, plus optical-only back-casts for Al Nahda's history.</p><h4>What radar sees, and what is predicted</h4><p>How deep L-band sees depends on how wet and salty the soil is. In moist soil it is shallow: L-band moisture missions such as SMAP measure the top 5 cm. In extremely dry, loose sand it can reach much deeper: Shuttle Imaging Radar at 1.3 GHz saw through about a metre or two of dry cover in the eastern Sahara. Water and salt both shorten it, so on Al Ain farms penetration changes through the irrigation cycle: deeper in dry sand between irrigations, shallow after irrigation or where the soil is saline.</p><ul><li><b>0-30 cm:</b> partly observed, through radar physics and the hybrid model.</li><li><b>30-60 and 60-100 cm:</b> predicted by the hybrid model, trained on soil cores and EM38, which reads soil conductivity to about 1.5 m in vertical dipole mode.</li></ul><p>Accuracy is expected to fall with depth, as in Zhang et al. (2023), where R² fell from 0.707 at the surface to 0.534 at 40-60 cm. It is reported separately for each depth.</p>${src('smap','sira','sira2','em38','zhang23')}`],
 'f-ew':['Output','Early-warning layer',`<p>Two flags per farm and season:</p><ul><li>Root-zone ECe above the threshold of the crop grown, for example 4.0 dS/m for date palm.</li><li>Leaching hotspots: salinity rising at 60-100 cm while falling at the surface, a sign of salt moving towards the aquifer.</li></ul><p>Designed with ADAFSA and EAD as a monitoring tool for the 2022 recycled-water standard.</p>`],
 'f-att':['Output (designs A and C)','Attribution',`<p>Farm-level salinity trajectories are compared before and after each farm's switch, against matched groundwater controls. Because farms switch at different times, a staggered-adoption difference-in-differences estimator is used, with event-study plots by year since the switch. Covariates include rain events, crop type, irrigation method and farm-gate water quality. Vigour (NDVI) and evapotranspiration are secondary outcomes.</p>${src('cal')}`],
 'o-data':['SO1 outcome','An open, time-stacked dataset',`<p>ECe, SAR, ions, texture, moisture and farm-gate water quality, co-located with NISAR overpasses. Used by researchers and EAD.</p>`],
@@ -892,7 +888,7 @@ table('decTbl',['#','Decision','Options'],[
  ['6','How to produce the 60-100 cm layer','Keep it as a model prediction with wide uncertainty; or treat it mainly as an EM38 and field-core product, and use radar only for the upper layers']]);
 table('nextTbl',['#','Question'],[
  ['1','Should the prescriptions cover only salinity and water (leaching, timing, crop choice, drainage), or bring sodicity back so gypsum can be recommended?'],
- ['2','Should sources be gathered on asphalt barriers, gypsum use in UAE or Gulf soils, and ICBA\'s salt-tolerant crop work?'],
+ ['2','Should sources be gathered on gypsum use in UAE or Gulf soils, and ICBA\'s salt-tolerant crop work?'],
  ['3','Should this be an optional fifth sub-objective, or stay a discussion point?']]);
 table('confTbl',['#','Item'],[
  ['1','NISAR acquisition mode (single, dual or quad-pol) over Al Nahda, Al Khatam, Al Khaznah and Al Foah'],
@@ -902,8 +898,7 @@ table('confTbl',['#','Item'],[
  ['5','Farm-gate EC and SAR of treated water in Al Ain'],
  ['6','Whether the 14 oasis farms in Loganathachetti et al. (2022) lie in Al Foah'],
  ['7','A lab able to measure complex permittivity at about 1.2 GHz'],
- ['8','Scopus indexing of each study in the literature review'],
- ['9','Funding scheme, budget ceiling and duration']]);
+ ['8','Funding scheme, budget ceiling and duration']]);
 
 /* ---------- drawer ---------- */
 const drawer=document.getElementById('drawer'),scrim=document.getElementById('scrim');let lastFocus=null;
